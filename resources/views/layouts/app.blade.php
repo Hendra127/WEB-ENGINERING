@@ -207,7 +207,7 @@ nav[role="navigation"] .flex.justify-between { display: flex; align-items: cente
     <div class="user-card">
       <div class="avatar">A</div>
       <div class="user-info">
-        <div class="user-name">Admin Engineering</div>
+        <div class="user-name">{{ auth()->user()->name }}</div>
         <div class="user-role">Administrator</div>
       </div>
     </div>
@@ -253,7 +253,12 @@ nav[role="navigation"] .flex.justify-between { display: flex; align-items: cente
           <a href="{{ route('engineering.profile') }}" class="dropdown-item"><i class="fas fa-user-circle"></i> Profil</a>
           <a href="{{ route('engineering.settings') }}" class="dropdown-item"><i class="fas fa-cog"></i> Pengaturan</a>
           <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px">
-            <a href="#" class="dropdown-item" style="color:var(--danger)"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            <a href="#" class="dropdown-item" style="color:var(--danger)" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </a>
           </div>
         </div>
       </div>
@@ -299,6 +304,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const isDark = document.documentElement.classList.contains('dark');
     const icon = document.querySelector('#themeToggle i');
     if(icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+});
+
+// AFK Logout logic (30 Menit)
+let idleTime = 0;
+const maxIdleTime = 30 * 60; // 30 minutes
+
+function resetTimer() {
+    idleTime = 0;
+}
+
+// Cek setiap detik
+setInterval(function() {
+    idleTime++;
+    if (idleTime >= maxIdleTime) {
+        const logoutForm = document.getElementById('logout-form');
+        if (logoutForm) logoutForm.submit();
+    }
+}, 1000);
+
+// Reset timer saat ada aktivitas
+['onload', 'onmousemove', 'onmousedown', 'ontouchstart', 'onclick', 'onkeypress', 'onscroll'].forEach(evt => {
+    window[evt] = resetTimer;
 });
 </script>
 
