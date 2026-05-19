@@ -24,6 +24,14 @@ Route::middleware('auth')->prefix('engineering')->name('engineering.')->group(fu
     Route::put('/klasifikasi/{item}',      [EngineeringController::class, 'klasifikasiUpdate'])->name('klasifikasi.update');
     Route::delete('/klasifikasi/{item}',   [EngineeringController::class, 'klasifikasiDestroy'])->name('klasifikasi.destroy');
 
+
+    Route::get('/pengajuan-perangkat',             [\App\Http\Controllers\PengajuanPerangkatController::class, 'index'])->name('pengajuan_perangkat');
+    Route::post('/pengajuan-perangkat',            [\App\Http\Controllers\PengajuanPerangkatController::class, 'store'])->name('pengajuan_perangkat.store');
+    Route::post('/pengajuan-perangkat/{item}/approve', [\App\Http\Controllers\PengajuanPerangkatController::class, 'approve'])->name('pengajuan_perangkat.approve');
+    Route::post('/pengajuan-perangkat/{item}/reject',  [\App\Http\Controllers\PengajuanPerangkatController::class, 'reject'])->name('pengajuan_perangkat.reject');
+    Route::delete('/pengajuan-perangkat/{item}',   [\App\Http\Controllers\PengajuanPerangkatController::class, 'destroy'])->name('pengajuan_perangkat.destroy');
+    Route::get('/pengajuan-perangkat/{item}/print', [\App\Http\Controllers\PengajuanPerangkatController::class, 'print'])->name('pengajuan_perangkat.print');
+
     Route::get('/profile',  [EngineeringController::class, 'profile'])->name('profile');
     Route::put('/profile',  [EngineeringController::class, 'profileUpdate'])->name('profile.update');
     Route::put('/profile/password', [EngineeringController::class, 'passwordUpdate'])->name('profile.password');

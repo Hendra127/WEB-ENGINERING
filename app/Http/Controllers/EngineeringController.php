@@ -124,6 +124,7 @@ class EngineeringController extends Controller
         return back()->with('success','Klasifikasi barang berhasil dihapus!');
     }
 
+
     /* ===================== PROFILE & SETTINGS ===================== */
     public function profile()  { return view('engineering.profile'); }
     public function settings() { return view('engineering.settings'); }

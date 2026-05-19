@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title','Sparepart Needed - Engineering')
-@section('page-title','Sparepart Needed')
+@section('title','Log Book - Engineering')
+@section('page-title','Log Book')
 @section('content')
 
 {{-- Alert --}}
@@ -70,12 +70,12 @@
           <th>Tgl Selesai</th>
           <th>Kerusakan</th>
           <th>Action</th>
-          <th>Status</th>
           <th>Pergantian Perangkat</th>
           <th>Keterangan Tambahan</th>
           <th>HARGA BARANG</th>
           <th>TOTAL BIAYA</th>
           <th>PENGANTARAN PERANGKAT</th>
+          <th>Status</th>
           <th class="sticky-col-head">Aksi</th>
         </tr>
       </thead>
@@ -102,16 +102,17 @@
           <td style="white-space:nowrap">{{ $row->tgl_selesai?->format('d/m/Y') }}</td>
           <td style="min-width:150px;font-size:12px">{{ $row->kerusakan }}</td>
           <td style="min-width:200px;font-size:12px">{{ $row->action }}</td>
-          <td>
-            <span class="badge badge-{{ $row->status==='DONE'?'success':($row->status==='PROSES'?'warning':'danger') }}">
-              {{ $row->status }}
-            </span>
-          </td>
+
           <td style="min-width:150px;font-size:12px">{{ $row->pergantian_perangkat }}</td>
           <td style="min-width:150px;font-size:12px">{{ $row->keterangan_tambahan }}</td>
           <td style="white-space:nowrap">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
           <td style="white-space:nowrap;font-weight:700">Rp {{ number_format($row->total_biaya, 0, ',', '.') }}</td>
           <td>{{ $row->pengantaran_perangkat }}</td>
+          <td>
+            <span class="badge badge-{{ $row->status==='DONE'?'success':($row->status==='PROSES'?'warning':'danger') }}">
+              {{ $row->status }}
+            </span>
+          </td>
           <td class="sticky-col">
             <div style="display:flex;gap:4px;justify-content:center">
               <button class="btn btn-sm" style="background:rgba(59,130,246,.1);color:var(--primary);border:none" onclick="viewSparepart({{ json_encode($row) }})" title="Detail"><i class="fas fa-info-circle"></i></button>
@@ -124,7 +125,7 @@
           </td>
         </tr>
         @empty
-        <tr><td colspan="13" style="text-align:center;padding:32px;color:var(--text2)"><i class="fas fa-inbox" style="font-size:32px;display:block;margin-bottom:8px"></i>Belum ada data. Klik <strong>Tambah</strong> untuk menambahkan.</td></tr>
+        <tr><td colspan="19" style="text-align:center;padding:32px;color:var(--text2)"><i class="fas fa-inbox" style="font-size:32px;display:block;margin-bottom:8px"></i>Belum ada data. Klik <strong>Tambah</strong> untuk menambahkan.</td></tr>
         @endforelse
       </tbody>
     </table>
@@ -136,7 +137,7 @@
 <div class="modal-overlay" id="addModal">
   <div class="modal" style="max-width:700px">
     <div class="modal-header">
-      <span class="modal-title"><i class="fas fa-plus-circle" style="color:var(--primary)"></i> Tambah Sparepart</span>
+      <span class="modal-title"><i class="fas fa-plus-circle" style="color:var(--primary)"></i> Tambah Log Book</span>
       <button class="btn-icon" onclick="closeModal('addModal')"><i class="fas fa-times"></i></button>
     </div>
     <form method="POST" action="{{ route('engineering.sparepart.store') }}">
@@ -192,7 +193,7 @@
         <div class="form-group"><label>Action (Work Done)</label><textarea name="action" rows="2" placeholder="Tindakan yang dilakukan..."></textarea></div>
       </div>
       <div class="grid-2">
-        <div class="form-group"><label>Pergantian Perangkat</label><input type="text" name="pergantian_perangkat" placeholder="Perangkat yang diganti..."></div>
+        
         <div class="form-group"><label>Keterangan Tambahan</label><input type="text" name="keterangan_tambahan" placeholder="Keterangan tambahan..."></div>
       </div>
       <div class="grid-2">
@@ -212,7 +213,7 @@
 <div class="modal-overlay" id="editModal">
   <div class="modal" style="max-width:620px">
     <div class="modal-header">
-      <span class="modal-title"><i class="fas fa-edit" style="color:var(--warning)"></i> Edit Sparepart</span>
+      <span class="modal-title"><i class="fas fa-edit" style="color:var(--warning)"></i> Edit Log Book</span>
       <button class="btn-icon" onclick="closeModal('editModal')"><i class="fas fa-times"></i></button>
     </div>
     <form method="POST" id="editForm">
@@ -288,7 +289,7 @@
 <div class="modal-overlay" id="viewModal">
   <div class="modal" style="max-width:600px">
     <div class="modal-header">
-      <span class="modal-title"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Detail Sparepart</span>
+      <span class="modal-title"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Detail Log Book</span>
       <button class="btn-icon" onclick="closeModal('viewModal')"><i class="fas fa-times"></i></button>
     </div>
     <div id="viewContent" style="font-size:14px">

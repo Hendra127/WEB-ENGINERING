@@ -110,7 +110,7 @@ input:focus, select:focus, textarea:focus { border-color:var(--primary); box-sha
 /* MODAL */
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); opacity:0; visibility:hidden; transition:var(--transition); }
 .modal-overlay.open { opacity:1; visibility:visible; }
-.modal { background:var(--surface); border-radius:var(--radius); padding:24px; width:90%; max-width:520px; box-shadow:var(--shadow-lg); transform:scale(.95); transition:var(--transition); }
+.modal { background:var(--surface); border-radius:var(--radius); padding:24px; width:90%; max-width:520px; box-shadow:var(--shadow-lg); transform:scale(.95); transition:var(--transition); max-height: 90vh; overflow-y: auto; }
 .modal-overlay.open .modal { transform:scale(1); }
 .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
 .modal-title { font-size:16px; font-weight:700; }
@@ -187,13 +187,17 @@ nav[role="navigation"] .flex.justify-between { display: flex; align-items: cente
     </a>
     <div class="nav-section">Inventaris</div>
     <a href="{{ route('engineering.sparepart') }}" class="nav-item {{ request()->routeIs('engineering.sparepart') ? 'active' : '' }}">
-      <span class="nav-icon"><i class="fas fa-tools"></i></span> Sparepart Needed
+      <span class="nav-icon"><i class="fas fa-tools"></i></span> Log Book
     </a>
     <a href="{{ route('engineering.alat') }}" class="nav-item {{ request()->routeIs('engineering.alat') ? 'active' : '' }}">
       <span class="nav-icon"><i class="fas fa-toolbox"></i></span> Daftar Alat Kantor
     </a>
     <a href="{{ route('engineering.klasifikasi') }}" class="nav-item {{ request()->routeIs('engineering.klasifikasi') ? 'active' : '' }}">
       <span class="nav-icon"><i class="fas fa-boxes"></i></span> Klasifikasi Barang
+    </a>
+
+    <a href="{{ route('engineering.pengajuan_perangkat') }}" class="nav-item {{ request()->routeIs('engineering.pengajuan_perangkat') ? 'active' : '' }}">
+      <span class="nav-icon"><i class="fas fa-laptop-medical"></i></span> Pengajuan Perangkat
     </a>
     <div class="nav-section">Pengaturan</div>
     <a href="{{ route('engineering.profile') }}" class="nav-item {{ request()->routeIs('engineering.profile') ? 'active' : '' }}">
@@ -208,7 +212,7 @@ nav[role="navigation"] .flex.justify-between { display: flex; align-items: cente
       <div class="avatar">A</div>
       <div class="user-info">
         <div class="user-name">{{ auth()->user()->name }}</div>
-        <div class="user-role">Administrator</div>
+        <div class="user-role">{{ ucfirst(auth()->user()->role) }}</div>
       </div>
     </div>
   </div>
@@ -227,7 +231,7 @@ nav[role="navigation"] .flex.justify-between { display: flex; align-items: cente
           <div class="dropdown-header">Notifikasi <span class="badge badge-danger">3 Baru</span></div>
           <a href="{{ route('engineering.sparepart') }}?search=Printer" class="notif-item">
             <div class="notif-icon" style="background:rgba(59,130,246,.1);color:var(--primary)"><i class="fas fa-tools"></i></div>
-            <div class="notif-content"><div class="notif-title">Sparepart "Printer" tertunda</div><div class="notif-time">2 menit yang lalu</div></div>
+            <div class="notif-content"><div class="notif-title">Log Book "Printer" tertunda</div><div class="notif-time">2 menit yang lalu</div></div>
           </a>
           <a href="{{ route('engineering.settings') }}" class="notif-item">
             <div class="notif-icon" style="background:rgba(16,185,129,.1);color:var(--success)"><i class="fas fa-check-circle"></i></div>
