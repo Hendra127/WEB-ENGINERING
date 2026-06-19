@@ -192,8 +192,11 @@ nav[role="navigation"] .flex.justify-between { display: flex; align-items: cente
     <a href="{{ route('engineering.alat') }}" class="nav-item {{ request()->routeIs('engineering.alat') ? 'active' : '' }}">
       <span class="nav-icon"><i class="fas fa-toolbox"></i></span> Daftar Alat Kantor
     </a>
+    <a href="{{ route('engineering.peminjaman') }}" class="nav-item {{ request()->routeIs('engineering.peminjaman') ? 'active' : '' }}">
+      <span class="nav-icon"><i class="fas fa-hand-holding"></i></span> Peminjaman Alat
+    </a>
     <a href="{{ route('engineering.klasifikasi') }}" class="nav-item {{ request()->routeIs('engineering.klasifikasi') ? 'active' : '' }}">
-      <span class="nav-icon"><i class="fas fa-boxes"></i></span> Klasifikasi Barang
+      <span class="nav-icon"><i class="fas fa-boxes"></i></span> Log Barang Masuk dan Keluar
     </a>
 
     <a href="{{ route('engineering.pengajuan_perangkat') }}" class="nav-item {{ request()->routeIs('engineering.pengajuan_perangkat') ? 'active' : '' }}">

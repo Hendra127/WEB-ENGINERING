@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title','Klasifikasi Barang - Engineering')
-@section('page-title','Klasifikasi Barang')
+@section('title','Log Barang Masuk dan Keluar - Engineering')
+@section('page-title','Log Barang Masuk dan Keluar')
 @section('content')
 
 @if(session('success'))
@@ -62,7 +62,7 @@
           </td>
         </tr>
         @empty
-        <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text2)"><i class="fas fa-boxes" style="font-size:32px;display:block;margin-bottom:8px"></i>Belum ada data klasifikasi barang.</td></tr>
+        <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text2)"><i class="fas fa-boxes" style="font-size:32px;display:block;margin-bottom:8px"></i>Belum ada data log barang masuk dan keluar.</td></tr>
         @endforelse
       </tbody>
     </table>
@@ -74,7 +74,7 @@
 <div class="modal-overlay" id="addKlasModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title"><i class="fas fa-boxes" style="color:var(--primary)"></i> Tambah Klasifikasi Barang</span>
+      <span class="modal-title"><i class="fas fa-boxes" style="color:var(--primary)"></i> Tambah Log Barang Masuk dan Keluar</span>
       <button class="btn-icon" onclick="closeModal('addKlasModal')"><i class="fas fa-times"></i></button>
     </div>
     <form method="POST" action="{{ route('engineering.klasifikasi.store') }}">
@@ -106,7 +106,7 @@
 <div class="modal-overlay" id="editKlasModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title"><i class="fas fa-edit" style="color:var(--warning)"></i> Edit Klasifikasi Barang</span>
+      <span class="modal-title"><i class="fas fa-edit" style="color:var(--warning)"></i> Edit Log Barang Masuk dan Keluar</span>
       <button class="btn-icon" onclick="closeModal('editKlasModal')"><i class="fas fa-times"></i></button>
     </div>
     <form method="POST" id="editKlasForm">
@@ -138,7 +138,7 @@
 <div class="modal-overlay" id="viewKlasModal">
   <div class="modal" style="max-width:500px">
     <div class="modal-header">
-      <span class="modal-title"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Detail Klasifikasi</span>
+      <span class="modal-title"><i class="fas fa-info-circle" style="color:var(--primary)"></i> Detail Log Barang Masuk dan Keluar</span>
       <button class="btn-icon" onclick="closeModal('viewKlasModal')"><i class="fas fa-times"></i></button>
     </div>
     <div id="viewKlasContent" style="font-size:14px">

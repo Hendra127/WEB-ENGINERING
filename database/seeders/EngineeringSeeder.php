@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Models\SparepartNeeded;
 use App\Models\AlatKantor;
 use App\Models\KlasifikasiBarang;
+use App\Models\PeminjamanTool;
 
 class EngineeringSeeder extends Seeder
 {
@@ -40,6 +41,13 @@ class EngineeringSeeder extends Seeder
             'kondisi' => 'BAIK',
             'tempat' => 'KANTOR'
         ]);
+        AlatKantor::create([
+            'nama_tool' => 'FOTT',
+            'qty' => 1,
+            'satuan' => 'UNIT',
+            'kondisi' => 'BAIK',
+            'tempat' => 'KANTOR'
+        ]);
 
         // Klasifikasi
         KlasifikasiBarang::create([
@@ -51,6 +59,29 @@ class EngineeringSeeder extends Seeder
             'nama_penerima' => 'ANDI PRATAMA',
             'lokasi' => 'Server Room',
             'status' => 'KELUAR'
+        ]);
+
+        // Peminjaman Tools
+        $tangga = AlatKantor::where('nama_tool', 'TANGGA LIPAT')->first();
+        PeminjamanTool::create([
+            'alat_kantor_id' => $tangga ? $tangga->id : null,
+            'nama_alat' => $tangga ? $tangga->nama_tool : 'TANGGA LIPAT',
+            'nama_peminjam' => 'ANDI PRATAMA',
+            'qty' => 1,
+            'tgl_pinjam' => date('Y-m-d'),
+            'status' => 'DIPINJAM',
+            'keterangan' => 'Pekerjaan perbaikan kabel di DKN Provinsi NTB'
+        ]);
+
+        PeminjamanTool::create([
+            'alat_kantor_id' => null,
+            'nama_alat' => 'FUSION SPLICER',
+            'nama_peminjam' => 'MISDAN',
+            'qty' => 1,
+            'tgl_pinjam' => date('Y-m-d', strtotime('-7 days')),
+            'tgl_kembali' => date('Y-m-d', strtotime('-1 days')),
+            'status' => 'DIKEMBALI',
+            'keterangan' => 'Splicing core di ruang server BKN'
         ]);
     }
 }

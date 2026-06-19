@@ -133,6 +133,7 @@
   <div style="margin-top:16px">{{ $data->links() }}</div>
 </div>
 
+
 {{-- Modal Tambah --}}
 <div class="modal-overlay" id="addModal">
   <div class="modal" style="max-width:700px">
@@ -140,7 +141,7 @@
       <span class="modal-title"><i class="fas fa-plus-circle" style="color:var(--primary)"></i> Tambah Log Book</span>
       <button class="btn-icon" onclick="closeModal('addModal')"><i class="fas fa-times"></i></button>
     </div>
-    <form method="POST" action="{{ route('engineering.sparepart.store') }}">
+    <form method="POST" action="{{ route('engineering.sparepart.store') }}" enctype="multipart/form-data">
       @csrf
       <div class="grid-2">
         <div class="form-group"><label>Lokasi Pekerjaan *</label><input type="text" name="lokasi_pekerjaan" required placeholder="Masukkan lokasi..."></div>
@@ -193,7 +194,7 @@
         <div class="form-group"><label>Action (Work Done)</label><textarea name="action" rows="2" placeholder="Tindakan yang dilakukan..."></textarea></div>
       </div>
       <div class="grid-2">
-        
+        <div class="form-group"><label>Foto Masuk (Check-in)</label><input type="file" name="foto_masuk" accept="image/*"></div>
         <div class="form-group"><label>Keterangan Tambahan</label><input type="text" name="keterangan_tambahan" placeholder="Keterangan tambahan..."></div>
       </div>
       <div class="grid-2">
@@ -211,12 +212,12 @@
 
 {{-- Modal Edit --}}
 <div class="modal-overlay" id="editModal">
-  <div class="modal" style="max-width:620px">
+  <div class="modal" style="max-width:700px">
     <div class="modal-header">
       <span class="modal-title"><i class="fas fa-edit" style="color:var(--warning)"></i> Edit Log Book</span>
       <button class="btn-icon" onclick="closeModal('editModal')"><i class="fas fa-times"></i></button>
     </div>
-    <form method="POST" id="editForm">
+    <form method="POST" id="editForm" enctype="multipart/form-data">
       @csrf @method('PUT')
       <div class="grid-2">
         <div class="form-group"><label>Lokasi Pekerjaan *</label><input type="text" name="lokasi_pekerjaan" id="e_lokasi" required></div>
@@ -277,14 +278,42 @@
         <div class="form-group"><label>Pengantaran Perangkat</label><input type="text" name="pengantaran_perangkat" id="e_pengantaran"></div>
       </div>
       <div class="form-group"><label>Catatan Lainnya</label><textarea name="keterangan" id="e_keterangan" rows="1"></textarea></div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+
+      <div style="border-top: 1px solid var(--border); margin: 15px 0 10px; padding-top: 15px; font-weight: bold; font-size: 13px; color: var(--primary)">
+        <i class="fas fa-camera"></i> DOKUMENTASI & BERITA ACARA
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Foto Masuk (Check-in)</label>
+          <input type="file" name="foto_masuk" accept="image/*">
+          <div id="e_preview_masuk" style="margin-top: 4px; font-size: 11px;"></div>
+        </div>
+        <div class="form-group">
+          <label>Foto Proses</label>
+          <input type="file" name="foto_proses" accept="image/*">
+          <div id="e_preview_proses" style="margin-top: 4px; font-size: 11px;"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Foto Keluar (Check-out)</label>
+          <input type="file" name="foto_keluar" accept="image/*">
+          <div id="e_preview_keluar" style="margin-top: 4px; font-size: 11px;"></div>
+        </div>
+        <div class="form-group" id="ba_upload_container">
+          <label>File BA (Sudah TTD / Overwrite)</label>
+          <input type="file" name="file_ba" accept="image/*,application/pdf,.doc,.docx">
+          <div id="e_preview_ba" style="margin-top: 4px; font-size: 11px;"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
         <button type="button" class="btn btn-outline" onclick="closeModal('editModal')">Batal</button>
         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update</button>
       </div>
     </form>
   </div>
 </div>
-
 {{-- Modal View Detail --}}
 <div class="modal-overlay" id="viewModal">
   <div class="modal" style="max-width:600px">
@@ -334,6 +363,23 @@ document.addEventListener('click', function(e) {
   }
 });
 
+function toggleBAUpload() {
+  const statusVal = document.getElementById('e_status').value;
+  const container = document.getElementById('ba_upload_container');
+  if (statusVal === 'DONE') {
+    container.style.display = 'block';
+  } else {
+    container.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const statusSelect = document.getElementById('e_status');
+  if (statusSelect) {
+    statusSelect.addEventListener('change', toggleBAUpload);
+  }
+});
+
 function editSparepart(row){
   const base='{{ url("engineering/sparepart") }}/';
   document.getElementById('editForm').action=base+row.id;
@@ -368,6 +414,39 @@ function editSparepart(row){
   document.getElementById('e_harga').value=row.harga||'';
   document.getElementById('e_pengantaran').value=row.pengantaran_perangkat||'';
   document.getElementById('e_keterangan').value=row.keterangan||'';
+  
+  // Previews of photos & BA in Edit form
+  const baseStorage = '{{ asset("storage") }}/';
+  
+  const previewMasuk = document.getElementById('e_preview_masuk');
+  if (row.foto_masuk) {
+    previewMasuk.innerHTML = `<a href="${baseStorage + row.foto_masuk}" target="_blank" style="color: var(--primary); font-weight: 500;"><i class="fas fa-image"></i> Lihat Foto Masuk</a>`;
+  } else {
+    previewMasuk.innerHTML = '<span style="color: var(--text2);">Belum ada foto</span>';
+  }
+  
+  const previewProses = document.getElementById('e_preview_proses');
+  if (row.foto_proses) {
+    previewProses.innerHTML = `<a href="${baseStorage + row.foto_proses}" target="_blank" style="color: var(--primary); font-weight: 500;"><i class="fas fa-image"></i> Lihat Foto Proses</a>`;
+  } else {
+    previewProses.innerHTML = '<span style="color: var(--text2);">Belum ada foto</span>';
+  }
+  
+  const previewKeluar = document.getElementById('e_preview_keluar');
+  if (row.foto_keluar) {
+    previewKeluar.innerHTML = `<a href="${baseStorage + row.foto_keluar}" target="_blank" style="color: var(--primary); font-weight: 500;"><i class="fas fa-image"></i> Lihat Foto Keluar</a>`;
+  } else {
+    previewKeluar.innerHTML = '<span style="color: var(--text2);">Belum ada foto</span>';
+  }
+  
+  const previewBA = document.getElementById('e_preview_ba');
+  if (row.file_ba) {
+    previewBA.innerHTML = `<a href="${baseStorage + row.file_ba}" target="_blank" style="color: var(--success); font-weight: 600;"><i class="fas fa-file-contract"></i> Lihat BA Signed</a>`;
+  } else {
+    previewBA.innerHTML = '<span style="color: var(--text2);">Belum ada BA yang diupload</span>';
+  }
+
+  toggleBAUpload();
   openModal('editModal');
 }
 
@@ -391,7 +470,39 @@ function viewSparepart(row) {
     <div style="margin-bottom:12px"><strong>Pergantian Perangkat:</strong><br>${row.pergantian_perangkat||'-'}</div>
     <div style="margin-bottom:12px"><strong>Keterangan Tambahan:</strong><br>${row.keterangan_tambahan||'-'}</div>
     <div style="margin-bottom:12px"><strong>Pengantaran Perangkat:</strong><br>${row.pengantaran_perangkat||'-'}</div>
-    <div><strong>Catatan:</strong><br>${row.keterangan||'-'}</div>
+    <div style="margin-bottom:12px"><strong>Catatan:</strong><br>${row.keterangan||'-'}</div>
+    
+    <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
+      <strong>Dokumentasi Kegiatan (Evidence)</strong>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px;">
+        <div style="text-align: center; font-size: 11px;">
+          <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center;">
+            ${row.foto_masuk ? `<a href="/storage/${row.foto_masuk}" target="_blank"><img src="/storage/${row.foto_masuk}" style="width: 100%; height: 100%; object-fit: cover;"></a>` : '<span style="color: var(--text2)">Tidak ada</span>'}
+          </div>
+          <span style="font-weight: 600; display: block; margin-top: 4px;">Foto Masuk</span>
+        </div>
+        <div style="text-align: center; font-size: 11px;">
+          <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center;">
+            ${row.foto_proses ? `<a href="/storage/${row.foto_proses}" target="_blank"><img src="/storage/${row.foto_proses}" style="width: 100%; height: 100%; object-fit: cover;"></a>` : '<span style="color: var(--text2)">Tidak ada</span>'}
+          </div>
+          <span style="font-weight: 600; display: block; margin-top: 4px;">Foto Proses</span>
+        </div>
+        <div style="text-align: center; font-size: 11px;">
+          <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center;">
+            ${row.foto_keluar ? `<a href="/storage/${row.foto_keluar}" target="_blank"><img src="/storage/${row.foto_keluar}" style="width: 100%; height: 100%; object-fit: cover;"></a>` : '<span style="color: var(--text2)">Tidak ada</span>'}
+          </div>
+          <span style="font-weight: 600; display: block; margin-top: 4px;">Foto Keluar</span>
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
+      <strong>Berita Acara (BA)</strong>
+      <div style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+        <a href="/engineering/sparepart/${row.id}/print-ba" target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none;"><i class="fas fa-file-pdf"></i> Cetak BA Otomatis</a>
+        ${row.file_ba ? `<a href="/storage/${row.file_ba}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration: none; border-color: var(--success); color: var(--success);"><i class="fas fa-file-signature"></i> Lihat BA Signed</a>` : ''}
+      </div>
+    </div>
   `;
   document.getElementById('viewContent').innerHTML = content;
   openModal('viewModal');

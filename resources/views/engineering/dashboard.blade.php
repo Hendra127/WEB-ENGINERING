@@ -13,11 +13,15 @@
   </div>
   <div class="stat-card">
     <div class="stat-icon" style="background:rgba(245,158,11,.12);color:#f59e0b"><i class="fas fa-boxes"></i></div>
-    <div><div class="stat-value">{{ $totalKlasifikasi ?? 17 }}</div><div class="stat-label">Klasifikasi Barang</div></div>
+    <div><div class="stat-value">{{ $totalKlasifikasi ?? 17 }}</div><div class="stat-label">Log Barang Masuk dan Keluar</div></div>
   </div>
   <div class="stat-card">
     <div class="stat-icon" style="background:rgba(239,68,68,.12);color:#ef4444"><i class="fas fa-exclamation-triangle"></i></div>
     <div><div class="stat-value">{{ $totalPending ?? 5 }}</div><div class="stat-label">Pending Request</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(139,92,246,.12);color:#8b5cf6"><i class="fas fa-hand-holding"></i></div>
+    <div><div class="stat-value">{{ $totalPeminjaman ?? 0 }}</div><div class="stat-label">Alat Dipinjam</div></div>
   </div>
 </div>
 <div class="grid-2">
@@ -46,9 +50,10 @@
       </div>
       @endforeach
     </div>
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px">
       <a href="{{ route('engineering.sparepart') }}" class="btn btn-primary" style="justify-content:center"><i class="fas fa-tools"></i> Sparepart</a>
       <a href="{{ route('engineering.alat') }}" class="btn btn-outline" style="justify-content:center"><i class="fas fa-toolbox"></i> Alat Kantor</a>
+      <a href="{{ route('engineering.peminjaman') }}" class="btn btn-outline" style="justify-content:center"><i class="fas fa-hand-holding"></i> Peminjaman</a>
     </div>
   </div>
 </div>
