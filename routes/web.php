@@ -1,47 +1,52 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EngineeringController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SparepartController;
+use App\Http\Controllers\AlatKantorController;
+use App\Http\Controllers\PeminjamanAlatController;
+use App\Http\Controllers\KlasifikasiController;
+use App\Http\Controllers\PengajuanPerangkatController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', fn() => redirect()->route('engineering.dashboard'));
 
 Route::middleware('auth')->prefix('engineering')->name('engineering.')->group(function () {
-    Route::get('/dashboard', [EngineeringController::class, 'dashboard'])->name('dashboard');
-    // ... other engineering routes ...
-    Route::get('/sparepart',             [EngineeringController::class, 'sparepart'])->name('sparepart');
-    Route::post('/sparepart',            [EngineeringController::class, 'sparepartStore'])->name('sparepart.store');
-    Route::put('/sparepart/{item}',      [EngineeringController::class, 'sparepartUpdate'])->name('sparepart.update');
-    Route::delete('/sparepart/{item}',   [EngineeringController::class, 'sparepartDestroy'])->name('sparepart.destroy');
-    Route::get('/sparepart/{item}/print-ba', [EngineeringController::class, 'printBA'])->name('sparepart.print_ba');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/alat-kantor',           [EngineeringController::class, 'alatKantor'])->name('alat');
-    Route::post('/alat-kantor',          [EngineeringController::class, 'alatStore'])->name('alat.store');
-    Route::put('/alat-kantor/{item}',    [EngineeringController::class, 'alatUpdate'])->name('alat.update');
-    Route::delete('/alat-kantor/{item}', [EngineeringController::class, 'alatDestroy'])->name('alat.destroy');
+    Route::get('/sparepart',             [SparepartController::class, 'index'])->name('sparepart');
+    Route::post('/sparepart',            [SparepartController::class, 'store'])->name('sparepart.store');
+    Route::put('/sparepart/{item}',      [SparepartController::class, 'update'])->name('sparepart.update');
+    Route::delete('/sparepart/{item}',   [SparepartController::class, 'destroy'])->name('sparepart.destroy');
+    Route::get('/sparepart/{item}/print-ba', [SparepartController::class, 'printBA'])->name('sparepart.print_ba');
 
-    Route::get('/peminjaman-alat',             [EngineeringController::class, 'peminjamanAlat'])->name('peminjaman');
-    Route::post('/peminjaman-alat',            [EngineeringController::class, 'peminjamanStore'])->name('peminjaman.store');
-    Route::put('/peminjaman-alat/{item}',      [EngineeringController::class, 'peminjamanUpdate'])->name('peminjaman.update');
-    Route::delete('/peminjaman-alat/{item}',   [EngineeringController::class, 'peminjamanDestroy'])->name('peminjaman.destroy');
+    Route::get('/alat-kantor',           [AlatKantorController::class, 'index'])->name('alat');
+    Route::post('/alat-kantor',          [AlatKantorController::class, 'store'])->name('alat.store');
+    Route::put('/alat-kantor/{item}',    [AlatKantorController::class, 'update'])->name('alat.update');
+    Route::delete('/alat-kantor/{item}', [AlatKantorController::class, 'destroy'])->name('alat.destroy');
 
-    Route::get('/klasifikasi',             [EngineeringController::class, 'klasifikasi'])->name('klasifikasi');
-    Route::post('/klasifikasi',            [EngineeringController::class, 'klasifikasiStore'])->name('klasifikasi.store');
-    Route::put('/klasifikasi/{item}',      [EngineeringController::class, 'klasifikasiUpdate'])->name('klasifikasi.update');
-    Route::delete('/klasifikasi/{item}',   [EngineeringController::class, 'klasifikasiDestroy'])->name('klasifikasi.destroy');
+    Route::get('/peminjaman-alat',             [PeminjamanAlatController::class, 'index'])->name('peminjaman');
+    Route::post('/peminjaman-alat',            [PeminjamanAlatController::class, 'store'])->name('peminjaman.store');
+    Route::put('/peminjaman-alat/{item}',      [PeminjamanAlatController::class, 'update'])->name('peminjaman.update');
+    Route::delete('/peminjaman-alat/{item}',   [PeminjamanAlatController::class, 'destroy'])->name('peminjaman.destroy');
 
+    Route::get('/klasifikasi',             [KlasifikasiController::class, 'index'])->name('klasifikasi');
+    Route::post('/klasifikasi',            [KlasifikasiController::class, 'store'])->name('klasifikasi.store');
+    Route::put('/klasifikasi/{item}',      [KlasifikasiController::class, 'update'])->name('klasifikasi.update');
+    Route::delete('/klasifikasi/{item}',   [KlasifikasiController::class, 'destroy'])->name('klasifikasi.destroy');
 
-    Route::get('/pengajuan-perangkat',             [\App\Http\Controllers\PengajuanPerangkatController::class, 'index'])->name('pengajuan_perangkat');
-    Route::post('/pengajuan-perangkat',            [\App\Http\Controllers\PengajuanPerangkatController::class, 'store'])->name('pengajuan_perangkat.store');
-    Route::post('/pengajuan-perangkat/{item}/approve', [\App\Http\Controllers\PengajuanPerangkatController::class, 'approve'])->name('pengajuan_perangkat.approve');
-    Route::post('/pengajuan-perangkat/{item}/reject',  [\App\Http\Controllers\PengajuanPerangkatController::class, 'reject'])->name('pengajuan_perangkat.reject');
-    Route::delete('/pengajuan-perangkat/{item}',   [\App\Http\Controllers\PengajuanPerangkatController::class, 'destroy'])->name('pengajuan_perangkat.destroy');
-    Route::get('/pengajuan-perangkat/{item}/print', [\App\Http\Controllers\PengajuanPerangkatController::class, 'print'])->name('pengajuan_perangkat.print');
+    Route::get('/pengajuan-perangkat',             [PengajuanPerangkatController::class, 'index'])->name('pengajuan_perangkat');
+    Route::post('/pengajuan-perangkat',            [PengajuanPerangkatController::class, 'store'])->name('pengajuan_perangkat.store');
+    Route::post('/pengajuan-perangkat/{item}/approve', [PengajuanPerangkatController::class, 'approve'])->name('pengajuan_perangkat.approve');
+    Route::post('/pengajuan-perangkat/{item}/reject',  [PengajuanPerangkatController::class, 'reject'])->name('pengajuan_perangkat.reject');
+    Route::delete('/pengajuan-perangkat/{item}',   [PengajuanPerangkatController::class, 'destroy'])->name('pengajuan_perangkat.destroy');
+    Route::get('/pengajuan-perangkat/{item}/print', [PengajuanPerangkatController::class, 'print'])->name('pengajuan_perangkat.print');
 
-    Route::get('/profile',  [EngineeringController::class, 'profile'])->name('profile');
-    Route::put('/profile',  [EngineeringController::class, 'profileUpdate'])->name('profile.update');
-    Route::put('/profile/password', [EngineeringController::class, 'passwordUpdate'])->name('profile.password');
-    Route::get('/settings', [EngineeringController::class, 'settings'])->name('settings');
+    Route::get('/profile',  [ProfileController::class, 'profile'])->name('profile');
+    Route::put('/profile',  [ProfileController::class, 'profileUpdate'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'passwordUpdate'])->name('profile.password');
+    Route::get('/settings', [ProfileController::class, 'settings'])->name('settings');
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');

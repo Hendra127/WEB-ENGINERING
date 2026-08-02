@@ -10,28 +10,49 @@
 @endif
 
 <div class="card" style="margin-bottom:20px">
-  <form method="GET" action="{{ route('engineering.alat') }}" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <form id="filterForm" method="GET" action="{{ route('engineering.alat') }}" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <div class="search-bar" style="flex:1;min-width:200px"><i class="fas fa-search"></i>
       <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama alat...">
     </div>
-    <select name="kondisi" style="width:160px">
+    <select name="kondisi" style="width:160px" onchange="this.form.submit()">
       <option value="">Semua Kondisi</option>
       @foreach(['BAIK','RUSAK RINGAN','RUSAK BERAT'] as $k)
         <option value="{{ $k }}" {{ request('kondisi')==$k?'selected':'' }}>{{ $k }}</option>
       @endforeach
     </select>
-    <input type="text" name="tempat" value="{{ request('tempat') }}" placeholder="Filter tempat..." style="width:140px">
-    <button type="submit" class="btn btn-outline"><i class="fas fa-filter"></i> Filter</button>
-    <a href="{{ route('engineering.alat') }}" class="btn btn-outline"><i class="fas fa-redo"></i></a>
+    <select name="tempat" style="width:160px" onchange="this.form.submit()">
+      <option value="">Semua Tempat</option>
+      @if(isset($tempatList))
+        @foreach($tempatList as $tp)
+          <option value="{{ $tp }}" {{ request('tempat')==$tp?'selected':'' }}>{{ $tp }}</option>
+        @endforeach
+      @endif
+    </select>
+    <a href="{{ route('engineering.alat') }}" class="btn btn-outline" title="Refresh / Reset Filter"><i class="fas fa-redo"></i></a>
     <button type="button" class="btn btn-primary" onclick="openModal('addAlatModal')"><i class="fas fa-plus"></i> Tambah</button>
   </form>
 </div>
 
 <div class="stats-grid" style="margin-bottom:20px">
-  <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,.12);color:#10b981"><i class="fas fa-check-circle"></i></div><div><div class="stat-value">{{ $stats['baik'] }}</div><div class="stat-label">Kondisi Baik</div></div></div>
-  <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.12);color:#f59e0b"><i class="fas fa-exclamation-circle"></i></div><div><div class="stat-value">{{ $stats['ringan'] }}</div><div class="stat-label">Rusak Ringan</div></div></div>
-  <div class="stat-card"><div class="stat-icon" style="background:rgba(239,68,68,.12);color:#ef4444"><i class="fas fa-times-circle"></i></div><div><div class="stat-value">{{ $stats['berat'] }}</div><div class="stat-label">Rusak Berat</div></div></div>
-  <div class="stat-card"><div class="stat-icon" style="background:rgba(59,130,246,.12);color:#3b82f6"><i class="fas fa-boxes"></i></div><div><div class="stat-value">{{ $stats['total'] }}</div><div class="stat-label">Total Alat</div></div></div>
+  @foreach([
+    ['Kondisi Baik', 'fas fa-check-circle', '#10b981', 'rgba(16,185,129,.12)', $stats['baik'], 'BAIK'],
+    ['Rusak Ringan', 'fas fa-exclamation-circle', '#f59e0b', 'rgba(245,158,11,.12)', $stats['ringan'], 'RUSAK RINGAN'],
+    ['Rusak Berat', 'fas fa-times-circle', '#ef4444', 'rgba(239,68,68,.12)', $stats['berat'], 'RUSAK BERAT'],
+    ['Total Alat', 'fas fa-boxes', '#3b82f6', 'rgba(59,130,246,.12)', $stats['total'], '']
+  ] as $st)
+  <div class="stat-card" 
+       onclick="const url = new URL(window.location.href); if('{{ $st[5] }}') url.searchParams.set('kondisi', '{{ $st[5] }}'); else url.searchParams.delete('kondisi'); window.location.href=url.href;"
+       style="cursor:pointer; transition: transform 0.2s, box-shadow 0.2s; {{ (request('kondisi') == $st[5] || (request('kondisi') == '' && $st[5] == '')) ? 'border: 1.5px solid '.$st[2].'; box-shadow: var(--shadow-lg);' : '' }}"
+       onmouseover="this.style.transform='translateY(-3px)'"
+       onmouseout="this.style.transform='translateY(0)'"
+       title="Klik untuk filter {{ $st[0] }}">
+    <div class="stat-icon" style="background:{{ $st[3] }};color:{{ $st[2] }}"><i class="{{ $st[1] }}"></i></div>
+    <div>
+      <div class="stat-value">{{ $st[4] }}</div>
+      <div class="stat-label">{{ $st[0] }}</div>
+    </div>
+  </div>
+  @endforeach
 </div>
 
 <div class="card">
@@ -84,7 +105,16 @@
       </div>
       <div class="grid-2">
         <div class="form-group"><label>Kondisi</label><select name="kondisi"><option>BAIK</option><option>RUSAK RINGAN</option><option>RUSAK BERAT</option></select></div>
-        <div class="form-group"><label>Tempat</label><input type="text" name="tempat" placeholder="Lokasi penyimpanan..."></div>
+        <div class="form-group"><label>Tempat</label>
+          <input type="text" name="tempat" list="tempatListOptions" placeholder="Lokasi penyimpanan...">
+          <datalist id="tempatListOptions">
+            @if(isset($tempatList))
+              @foreach($tempatList as $tp)
+                <option value="{{ $tp }}">
+              @endforeach
+            @endif
+          </datalist>
+        </div>
       </div>
       <div class="form-group"><label>Keterangan</label><textarea name="keterangan" rows="2" placeholder="Keterangan tambahan..."></textarea></div>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
@@ -111,7 +141,9 @@
       </div>
       <div class="grid-2">
         <div class="form-group"><label>Kondisi</label><select name="kondisi" id="ea_kondisi"><option>BAIK</option><option>RUSAK RINGAN</option><option>RUSAK BERAT</option></select></div>
-        <div class="form-group"><label>Tempat</label><input type="text" name="tempat" id="ea_tempat"></div>
+        <div class="form-group"><label>Tempat</label>
+          <input type="text" name="tempat" id="ea_tempat" list="tempatListOptions" placeholder="Lokasi penyimpanan...">
+        </div>
       </div>
       <div class="form-group"><label>Keterangan</label><textarea name="keterangan" id="ea_ket" rows="2"></textarea></div>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">

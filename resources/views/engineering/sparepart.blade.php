@@ -14,19 +14,32 @@
 {{-- Filter Bar --}}
 <div class="card" style="margin-bottom:20px">
   <form method="GET" action="{{ route('engineering.sparepart') }}" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <div class="search-bar" style="flex:1;min-width:200px">
+    <div class="search-bar" style="flex:1;min-width:220px">
       <i class="fas fa-search"></i>
-      <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari lokasi, jenis, teknisi...">
+      <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kata kunci apapun...">
     </div>
-    <select name="status" style="width:160px">
+    <select name="status" style="width:140px;height:38px;padding:0 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px" onchange="this.form.submit()">
       <option value="">Semua Status</option>
       @foreach(['DONE','PROSES','PENDING'] as $s)
         <option value="{{ $s }}" {{ request('status')==$s?'selected':'' }}>{{ $s }}</option>
       @endforeach
     </select>
-    <button type="submit" class="btn btn-outline"><i class="fas fa-filter"></i> Filter</button>
-    <a href="{{ route('engineering.sparepart') }}" class="btn btn-outline"><i class="fas fa-redo"></i></a>
-    <button type="button" class="btn btn-primary" onclick="openModal('addModal')"><i class="fas fa-plus"></i> Tambah</button>
+    <select name="lokasi" style="width:190px;height:38px;padding:0 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px" onchange="this.form.submit()">
+      <option value="">Semua Lokasi</option>
+      @if(isset($lokasiList))
+        @foreach($lokasiList as $lok)
+          <option value="{{ $lok }}" {{ request('lokasi')==$lok?'selected':'' }}>{{ $lok }}</option>
+        @endforeach
+      @endif
+    </select>
+    <div style="display:flex;align-items:center;gap:6px;font-size:13px">
+      <input type="date" name="start_date" value="{{ request('start_date') }}" title="Tanggal Mulai" style="height:38px;padding:0 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text)">
+      <span style="color:var(--text2)">s/d</span>
+      <input type="date" name="end_date" value="{{ request('end_date') }}" title="Tanggal Selesai" style="height:38px;padding:0 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text)">
+    </div>
+    <button type="submit" class="btn btn-outline" style="height:38px"><i class="fas fa-filter"></i> Filter</button>
+    <a href="{{ route('engineering.sparepart') }}" class="btn btn-outline" style="height:38px;display:inline-flex;align-items:center" title="Reset Filter"><i class="fas fa-redo"></i></a>
+    <button type="button" class="btn btn-primary" style="height:38px" onclick="openModal('addModal')"><i class="fas fa-plus"></i> Tambah</button>
   </form>
 </div>
 
@@ -58,57 +71,54 @@
     <table>
       <thead>
         <tr>
-          <th>No</th>
+          <th style="width:40px;text-align:center">No</th>
           <th>Lokasi Pekerjaan</th>
           <th>Ruang</th>
           <th>Jenis Pekerjaan</th>
-          <th>Type</th>
-          <th>Qty</th>
-          <th>Satuan</th>
+          <th>Type / Merk</th>
+          <th style="text-align:center">Qty</th>
+          <th style="text-align:center">Satuan</th>
           <th>Teknisi</th>
           <th>Tgl Mulai</th>
           <th>Tgl Selesai</th>
           <th>Kerusakan</th>
           <th>Action</th>
-          <th>Pergantian Perangkat</th>
+          <th>Pergantian Perangkat</th>         
           <th>Keterangan Tambahan</th>
-          <th>HARGA BARANG</th>
-          <th>TOTAL BIAYA</th>
-          <th>PENGANTARAN PERANGKAT</th>
-          <th>Status</th>
-          <th class="sticky-col-head">Aksi</th>
+          <th>Harga Barang</th>
+          <th>Total Biaya</th>
+          <th style="text-align:center">Status</th>
+          <th class="sticky-col-head" style="text-align:center">Aksi</th>
         </tr>
       </thead>
       <tbody>
         @forelse($data as $i=>$row)
         <tr>
-          <td>{{ $data->firstItem()+$i }}</td>
+          <td style="text-align:center;font-weight:600">{{ $data->firstItem()+$i }}</td>
           <td style="font-weight:600;white-space:nowrap">{{ $row->lokasi_pekerjaan }}</td>
-          <td>{{ $row->ruang }}</td>
-          <td><span class="badge badge-info">{{ $row->jenis_pekerjaan }}</span></td>
-          <td>{{ $row->type }}</td>
+          <td style="white-space:nowrap">{{ $row->ruang ?: '-' }}</td>
+          <td style="white-space:nowrap"><span class="badge badge-info">{{ $row->jenis_pekerjaan }}</span></td>
+          <td style="white-space:nowrap">{{ $row->type ?: '-' }}</td>
           <td style="text-align:center;font-weight:700;color:var(--primary)">{{ $row->qty }}</td>
-          <td>{{ $row->satuan }}</td>
+          <td style="text-align:center;white-space:nowrap">{{ $row->satuan }}</td>
           <td style="white-space:nowrap">
             @if(is_array($row->teknisi))
               @foreach($row->teknisi as $t)
                 <span class="badge badge-outline" style="margin-bottom:2px">{{ $t }}</span>
               @endforeach
             @else
-              {{ $row->teknisi }}
+              {{ $row->teknisi ?: '-' }}
             @endif
           </td>
-          <td style="white-space:nowrap">{{ $row->tgl_masuk?->format('d/m/Y') }}</td>
-          <td style="white-space:nowrap">{{ $row->tgl_selesai?->format('d/m/Y') }}</td>
-          <td style="min-width:150px;font-size:12px">{{ $row->kerusakan }}</td>
-          <td style="min-width:200px;font-size:12px">{{ $row->action }}</td>
-
-          <td style="min-width:150px;font-size:12px">{{ $row->pergantian_perangkat }}</td>
-          <td style="min-width:150px;font-size:12px">{{ $row->keterangan_tambahan }}</td>
+          <td style="white-space:nowrap">{{ $row->tgl_masuk?->format('d/m/Y') ?: '-' }}</td>
+          <td style="white-space:nowrap">{{ $row->tgl_selesai?->format('d/m/Y') ?: '-' }}</td>
+          <td style="min-width:140px;font-size:12px">{{ $row->kerusakan ?: '-' }}</td>
+          <td style="min-width:160px;font-size:12px">{{ $row->action ?: '-' }}</td>
+          <td style="min-width:140px;font-size:12px">{{ $row->pergantian_perangkat ?: '-' }}</td>
+          <td style="min-width:140px;font-size:12px">{{ $row->keterangan_tambahan ?: '-' }}</td>
           <td style="white-space:nowrap">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
-          <td style="white-space:nowrap;font-weight:700">Rp {{ number_format($row->total_biaya, 0, ',', '.') }}</td>
-          <td>{{ $row->pengantaran_perangkat }}</td>
-          <td>
+          <td style="white-space:nowrap;font-weight:700;color:var(--primary)">Rp {{ number_format($row->total_biaya, 0, ',', '.') }}</td>
+          <td style="white-space:nowrap;text-align:center">
             <span class="badge badge-{{ $row->status==='DONE'?'success':($row->status==='PROSES'?'warning':'danger') }}">
               {{ $row->status }}
             </span>
@@ -125,7 +135,7 @@
           </td>
         </tr>
         @empty
-        <tr><td colspan="19" style="text-align:center;padding:32px;color:var(--text2)"><i class="fas fa-inbox" style="font-size:32px;display:block;margin-bottom:8px"></i>Belum ada data. Klik <strong>Tambah</strong> untuk menambahkan.</td></tr>
+        <tr><td colspan="18" style="text-align:center;padding:32px;color:var(--text2)"><i class="fas fa-inbox" style="font-size:32px;display:block;margin-bottom:8px"></i>Belum ada data. Klik <strong>Tambah</strong> untuk menambahkan.</td></tr>
         @endforelse
       </tbody>
     </table>
@@ -144,7 +154,16 @@
     <form method="POST" action="{{ route('engineering.sparepart.store') }}" enctype="multipart/form-data">
       @csrf
       <div class="grid-2">
-        <div class="form-group"><label>Lokasi Pekerjaan *</label><input type="text" name="lokasi_pekerjaan" required placeholder="Masukkan lokasi..."></div>
+        <div class="form-group"><label>Lokasi Pekerjaan *</label>
+          <input type="text" name="lokasi_pekerjaan" list="lokasiSparepartList" required placeholder="Masukkan lokasi...">
+          <datalist id="lokasiSparepartList">
+            @if(isset($lokasiList))
+              @foreach($lokasiList as $lok)
+                <option value="{{ $lok }}">
+              @endforeach
+            @endif
+          </datalist>
+        </div>
         <div class="form-group"><label>Ruang</label><input type="text" name="ruang" placeholder="Nama ruang..."></div>
       </div>
       <div class="grid-2">
@@ -410,10 +429,9 @@ function editSparepart(row){
   document.getElementById('e_kerusakan').value=row.kerusakan||'';
   document.getElementById('e_action').value=row.action||'';
   document.getElementById('e_pergantian').value=row.pergantian_perangkat||'';
-  document.getElementById('e_keterangan_tambahan').value=row.keterangan_tambahan||'';
   document.getElementById('e_harga').value=row.harga||'';
-  document.getElementById('e_pengantaran').value=row.pengantaran_perangkat||'';
   document.getElementById('e_keterangan').value=row.keterangan||'';
+   document.getElementById('e_keterangan_tambahan').value=row.keterangan_tambahan||'';
   
   // Previews of photos & BA in Edit form
   const baseStorage = '{{ asset("storage") }}/';
@@ -469,8 +487,7 @@ function viewSparepart(row) {
     <div style="margin-bottom:12px"><strong>Action (Work Done):</strong><br>${row.action||'-'}</div>
     <div style="margin-bottom:12px"><strong>Pergantian Perangkat:</strong><br>${row.pergantian_perangkat||'-'}</div>
     <div style="margin-bottom:12px"><strong>Keterangan Tambahan:</strong><br>${row.keterangan_tambahan||'-'}</div>
-    <div style="margin-bottom:12px"><strong>Pengantaran Perangkat:</strong><br>${row.pengantaran_perangkat||'-'}</div>
-    <div style="margin-bottom:12px"><strong>Catatan:</strong><br>${row.keterangan||'-'}</div>
+     <div style="margin-bottom:12px"><strong>Catatan:</strong><br>${row.keterangan||'-'}</div>
     
     <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
       <strong>Dokumentasi Kegiatan (Evidence)</strong>

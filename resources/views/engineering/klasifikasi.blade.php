@@ -14,13 +14,12 @@
     <div class="search-bar" style="flex:1;min-width:200px"><i class="fas fa-search"></i>
       <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama barang...">
     </div>
-    <select name="status" style="width:160px">
+    <select name="status" style="width:160px" onchange="this.form.submit()">
       <option value="">Semua Status</option>
       <option value="MASUK" {{ request('status')=='MASUK'?'selected':'' }}>MASUK</option>
       <option value="KELUAR" {{ request('status')=='KELUAR'?'selected':'' }}>KELUAR</option>
     </select>
-    <button type="submit" class="btn btn-outline"><i class="fas fa-filter"></i> Filter</button>
-    <a href="{{ route('engineering.klasifikasi') }}" class="btn btn-outline"><i class="fas fa-redo"></i></a>
+    <a href="{{ route('engineering.klasifikasi') }}" class="btn btn-outline" title="Refresh / Reset Filter"><i class="fas fa-redo"></i></a>
     <button type="button" class="btn btn-primary" onclick="openModal('addKlasModal')"><i class="fas fa-plus"></i> Tambah</button>
   </form>
 </div>

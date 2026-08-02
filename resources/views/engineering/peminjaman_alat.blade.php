@@ -9,18 +9,29 @@
 </div>
 @endif
 
+@if($errors->any())
+<div class="alert-danger" id="errorBox" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:16px;font-weight:600;font-size:14px;">
+  <i class="fas fa-exclamation-circle"></i> {{ $errors->first() }}
+  <button onclick="document.getElementById('errorBox').remove()" style="float:right;background:none;border:none;cursor:pointer;color:inherit"><i class="fas fa-times"></i></button>
+</div>
+@endif
+
 <div class="card" style="margin-bottom:20px">
   <form method="GET" action="{{ route('engineering.peminjaman') }}" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <div class="search-bar" style="flex:1;min-width:200px"><i class="fas fa-search"></i>
       <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peminjam atau alat...">
     </div>
-    <select name="status" style="width:160px">
+    <select name="status" style="width:160px" onchange="this.form.submit()">
       <option value="">Semua Status</option>
       <option value="DIPINJAM" {{ request('status')=='DIPINJAM'?'selected':'' }}>DIPINJAM</option>
       <option value="DIKEMBALI" {{ request('status')=='DIKEMBALI'?'selected':'' }}>DIKEMBALI</option>
     </select>
-    <button type="submit" class="btn btn-outline"><i class="fas fa-filter"></i> Filter</button>
-    <a href="{{ route('engineering.peminjaman') }}" class="btn btn-outline"><i class="fas fa-redo"></i></a>
+    <div style="display:flex;align-items:center;gap:6px;font-size:13px">
+      <input type="date" name="start_date" value="{{ request('start_date') }}" title="Tanggal Pinjam Mulai" style="padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text)" onchange="this.form.submit()">
+      <span>s/d</span>
+      <input type="date" name="end_date" value="{{ request('end_date') }}" title="Tanggal Pinjam Selesai" style="padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text)" onchange="this.form.submit()">
+    </div>
+    <a href="{{ route('engineering.peminjaman') }}" class="btn btn-outline" title="Refresh / Reset Filter"><i class="fas fa-redo"></i></a>
     <button type="button" class="btn btn-primary" onclick="openModal('addPemModal')"><i class="fas fa-plus"></i> Tambah</button>
   </form>
 </div>
@@ -93,10 +104,14 @@
       @csrf
       <div class="form-group">
         <label>Pilih Alat Kantor *</label>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <input type="text" id="add_alat_search" placeholder="Cari nama alat di database..." style="flex:1" onkeyup="filterAlatSelect('add')">
+          <button type="button" class="btn btn-outline" onclick="filterAlatSelect('add')"><i class="fas fa-search"></i> Cari</button>
+        </div>
         <select name="alat_kantor_id" id="add_alat_kantor_id" onchange="toggleCustomAlat('add')">
           <option value="">-- Ketik Nama Alat Manual --</option>
           @foreach($alatList as $alat)
-            <option value="{{ $alat->id }}">{{ $alat->nama_tool }} (Kondisi: {{ $alat->kondisi }} - Tempat: {{ $alat->tempat ?: '-' }})</option>
+            <option value="{{ $alat->id }}" data-search="{{ strtolower($alat->nama_tool.' '.$alat->kondisi.' '.$alat->tempat) }}">{{ $alat->nama_tool }} (Kondisi: {{ $alat->kondisi }} - Tempat: {{ $alat->tempat ?: '-' }})</option>
           @endforeach
         </select>
       </div>
@@ -128,11 +143,11 @@
       <div class="grid-2">
         <div class="form-group">
           <label>Tanggal Pinjam *</label>
-          <input type="date" name="tgl_pinjam" value="{{ date('Y-m-d') }}" required>
+          <input type="date" name="tgl_pinjam" id="add_tgl_pinjam" value="{{ date('Y-m-d') }}" required onchange="updateMaxReturnDate('add')">
         </div>
         <div class="form-group">
-          <label>Tanggal Kembali</label>
-          <input type="date" name="tgl_kembali">
+          <label>Tanggal Kembali <small style="color:var(--primary)">(Max 7 Hari)</small></label>
+          <input type="date" name="tgl_kembali" id="add_tgl_kembali" onchange="validateMaxDuration('add')">
         </div>
       </div>
 
@@ -160,10 +175,14 @@
       @csrf @method('PUT')
       <div class="form-group">
         <label>Pilih Alat Kantor *</label>
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <input type="text" id="edit_alat_search" placeholder="Cari nama alat di database..." style="flex:1" onkeyup="filterAlatSelect('edit')">
+          <button type="button" class="btn btn-outline" onclick="filterAlatSelect('edit')"><i class="fas fa-search"></i> Cari</button>
+        </div>
         <select name="alat_kantor_id" id="edit_alat_kantor_id" onchange="toggleCustomAlat('edit')">
           <option value="">-- Ketik Nama Alat Manual --</option>
           @foreach($alatList as $alat)
-            <option value="{{ $alat->id }}">{{ $alat->nama_tool }}</option>
+            <option value="{{ $alat->id }}" data-search="{{ strtolower($alat->nama_tool.' '.$alat->kondisi.' '.$alat->tempat) }}">{{ $alat->nama_tool }}</option>
           @endforeach
         </select>
       </div>
@@ -195,11 +214,11 @@
       <div class="grid-2">
         <div class="form-group">
           <label>Tanggal Pinjam *</label>
-          <input type="date" name="tgl_pinjam" id="ep_pinjam" required>
+          <input type="date" name="tgl_pinjam" id="ep_pinjam" required onchange="updateMaxReturnDate('edit')">
         </div>
         <div class="form-group">
-          <label>Tanggal Kembali</label>
-          <input type="date" name="tgl_kembali" id="ep_kembali">
+          <label>Tanggal Kembali <small style="color:var(--primary)">(Max 7 Hari)</small></label>
+          <input type="date" name="tgl_kembali" id="ep_kembali" onchange="validateMaxDuration('edit')">
         </div>
       </div>
 
@@ -292,9 +311,69 @@ function toggleCustomAlat(mode) {
   }
 }
 
+function filterAlatSelect(mode) {
+  const query = document.getElementById(mode + '_alat_search').value.toLowerCase().trim();
+  const select = document.getElementById(mode + '_alat_kantor_id');
+  const options = select.options;
+  
+  for (let i = 0; i < options.length; i++) {
+    const opt = options[i];
+    if (opt.value === '') continue; // Skip default manual option
+    const searchData = opt.getAttribute('data-search') || opt.text.toLowerCase();
+    if (searchData.includes(query)) {
+      opt.style.display = '';
+    } else {
+      opt.style.display = 'none';
+    }
+  }
+}
+
+function updateMaxReturnDate(mode) {
+  const pinjamInput = mode === 'add' ? document.getElementById('add_tgl_pinjam') : document.getElementById('ep_pinjam');
+  const kembaliInput = mode === 'add' ? document.getElementById('add_tgl_kembali') : document.getElementById('ep_kembali');
+  
+  if (!pinjamInput.value) return;
+
+  const pinjamDate = new Date(pinjamInput.value);
+  const minDateStr = pinjamInput.value;
+  
+  // Max date is 7 days after pinjamDate
+  const maxDate = new Date(pinjamDate);
+  maxDate.setDate(maxDate.getDate() + 7);
+  const maxDateStr = maxDate.toISOString().split('T')[0];
+  
+  kembaliInput.setAttribute('min', minDateStr);
+  kembaliInput.setAttribute('max', maxDateStr);
+
+  if (kembaliInput.value) {
+    validateMaxDuration(mode);
+  }
+}
+
+function validateMaxDuration(mode) {
+  const pinjamInput = mode === 'add' ? document.getElementById('add_tgl_pinjam') : document.getElementById('ep_pinjam');
+  const kembaliInput = mode === 'add' ? document.getElementById('add_tgl_kembali') : document.getElementById('ep_kembali');
+
+  if (pinjamInput.value && kembaliInput.value) {
+    const pinjamDate = new Date(pinjamInput.value);
+    const kembaliDate = new Date(kembaliInput.value);
+    const diffTime = kembaliDate - pinjamDate;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      alert('Tanggal kembali tidak boleh sebelum tanggal pinjam!');
+      kembaliInput.value = '';
+    } else if (diffDays > 7) {
+      alert('Durasi peminjaman tidak boleh lebih dari 7 hari dari tanggal peminjaman!');
+      kembaliInput.value = '';
+    }
+  }
+}
+
 // Trigger initial toggle state on load
 document.addEventListener('DOMContentLoaded', () => {
   toggleCustomAlat('add');
+  updateMaxReturnDate('add');
 });
 
 function editPem(row){

@@ -14,8 +14,13 @@ class PengajuanPerangkat extends Model
         'nama_perangkat',
         'jumlah',
         'alasan',
+        'details',
         'status',
         'alasan_penolakan',
+    ];
+
+    protected $casts = [
+        'details' => 'array',
     ];
 
     public function user()
