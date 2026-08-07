@@ -17,6 +17,8 @@ Route::middleware('auth')->prefix('engineering')->name('engineering.')->group(fu
 
     Route::get('/sparepart',             [SparepartController::class, 'index'])->name('sparepart');
     Route::post('/sparepart',            [SparepartController::class, 'store'])->name('sparepart.store');
+    Route::post('/sparepart/import',     [SparepartController::class, 'import'])->name('sparepart.import');
+    Route::get('/sparepart/template',    [SparepartController::class, 'template'])->name('sparepart.template');
     Route::put('/sparepart/{item}',      [SparepartController::class, 'update'])->name('sparepart.update');
     Route::delete('/sparepart/{item}',   [SparepartController::class, 'destroy'])->name('sparepart.destroy');
     Route::get('/sparepart/{item}/print-ba', [SparepartController::class, 'printBA'])->name('sparepart.print_ba');

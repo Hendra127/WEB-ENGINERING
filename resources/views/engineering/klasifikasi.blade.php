@@ -49,13 +49,13 @@
               <i class="fas fa-{{ $row->status==='MASUK'?'arrow-down':'arrow-up' }}"></i> {{ $row->status }}
             </span>
           </td>
-          <td class="sticky-col">
-            <div style="display:flex;gap:4px;justify-content:center">
-              <button class="btn btn-sm" style="background:rgba(59,130,246,.1);color:var(--primary);border:none" onclick="viewKlas({{ json_encode($row) }})" title="Detail"><i class="fas fa-info-circle"></i></button>
-              <button class="btn btn-sm" style="background:rgba(245,158,11,.1);color:var(--warning);border:none" onclick="editKlas({{ json_encode($row) }})" title="Edit"><i class="fas fa-edit"></i></button>
-              <form method="POST" action="{{ route('engineering.klasifikasi.destroy',$row) }}" onsubmit="return confirm('Hapus data ini?')" style="margin:0">
+          <td class="sticky-col" style="vertical-align: middle;">
+            <div style="display:flex;gap:16px;justify-content:center;align-items:center;height:100%;">
+              <button style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0;transition:transform 0.2s;" onclick="viewKlas({{ json_encode($row) }})" title="Detail" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="far fa-eye" style="-webkit-text-stroke: 0.5px var(--surface);"></i></button>
+              <button style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0;transition:transform 0.2s;" onclick="editKlas({{ json_encode($row) }})" title="Edit" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="far fa-edit" style="-webkit-text-stroke: 0.5px var(--surface);"></i></button>
+              <form method="POST" action="{{ route('engineering.klasifikasi.destroy',$row) }}" onsubmit="return confirm('Hapus data ini?')" style="margin:0;display:flex;align-items:center;">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-sm" style="background:rgba(239,68,68,.1);color:var(--danger);border:none" title="Hapus"><i class="fas fa-trash"></i></button>
+                <button type="submit" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0;transition:transform 0.2s;" title="Hapus" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="far fa-trash-alt" style="-webkit-text-stroke: 0.5px var(--surface);"></i></button>
               </form>
             </div>
           </td>
@@ -155,31 +155,31 @@
 .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius-sm); }
 table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
 table th { 
-  background: #f8fafc !important; 
-  color: #475569 !important; 
+  background: var(--surface2) !important; 
+  color: var(--text) !important; 
   font-size: 11px !important; 
   font-weight: 700 !important; 
   text-transform: uppercase !important; 
   letter-spacing: 0.05em; 
   padding: 12px 16px !important;
-  border-bottom: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid var(--border) !important;
   text-align: center !important;
 }
-table td { padding: 12px 16px !important; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+table td { padding: 12px 16px !important; border-bottom: 1px solid var(--border); vertical-align: middle; }
 table tr:last-child td { border-bottom: none; }
 
 /* Sticky Column Style */
 .sticky-col {
   position: sticky;
   right: 0;
-  background: white !important;
+  background: var(--surface) !important;
   z-index: 5;
   box-shadow: -4px 0 8px rgba(0,0,0,0.05);
 }
 .sticky-col-head {
   position: sticky;
   right: 0;
-  background: #f8fafc !important;
+  background: var(--surface2) !important;
   z-index: 6;
   box-shadow: -4px 0 8px rgba(0,0,0,0.05);
 }

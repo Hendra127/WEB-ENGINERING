@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SparepartNeeded;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SparepartController extends Controller
 {
@@ -178,5 +181,123 @@ class SparepartController extends Controller
     public function printBA(SparepartNeeded $item)
     {
         return view('engineering.sparepart_print_ba', compact('item'));
+    }
+
+    public function import(Request $req)
+    {
+        $req->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            $file = $req->file('file');
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $rows = $worksheet->toArray();
+            
+            // Remove header row
+            array_shift($rows);
+
+            $imported = 0;
+            foreach ($rows as $row) {
+                // Check if row is empty (first column is empty)
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                // Parse teknisi (assuming comma separated)
+                $teknisiStr = $row[6] ?? '';
+                $teknisi = array_map('trim', explode(',', $teknisiStr));
+                
+                // Parse dates
+                $tgl_masuk = null;
+                $tgl_selesai = null;
+                
+                if (!empty($row[7])) {
+                    if (is_numeric($row[7])) {
+                        $tgl_masuk = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[7])->format('Y-m-d');
+                    } else {
+                        $tgl_masuk = date('Y-m-d', strtotime(str_replace('/', '-', $row[7])));
+                    }
+                }
+                
+                if (!empty($row[8])) {
+                    if (is_numeric($row[8])) {
+                        $tgl_selesai = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[8])->format('Y-m-d');
+                    } else {
+                        $tgl_selesai = date('Y-m-d', strtotime(str_replace('/', '-', $row[8])));
+                    }
+                }
+
+                $qty = (int)($row[4] ?? 1);
+                $harga = (float)($row[14] ?? 0);
+
+                SparepartNeeded::create([
+                    'lokasi_pekerjaan' => $row[0] ?? '-',
+                    'ruang' => $row[1] ?? '',
+                    'jenis_pekerjaan' => $row[2] ?? 'LAINNYA',
+                    'type' => $row[3] ?? '',
+                    'qty' => $qty,
+                    'satuan' => $row[5] ?? 'Unit',
+                    'teknisi' => $teknisi,
+                    'tgl_masuk' => $tgl_masuk,
+                    'tgl_selesai' => $tgl_selesai,
+                    'kerusakan' => $row[9] ?? '',
+                    'action' => $row[10] ?? '',
+                    'pergantian_perangkat' => $row[11] ?? '',
+                    'keterangan_tambahan' => $row[12] ?? '',
+                    'keterangan' => $row[13] ?? '',
+                    'harga' => $harga,
+                    'total_biaya' => $qty * $harga,
+                    'pengantaran_perangkat' => $row[15] ?? '',
+                    'status' => strtoupper($row[16] ?? 'PENDING')
+                ]);
+                $imported++;
+            }
+
+            return back()->with('success', "Berhasil mengimport $imported data!");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
+        }
+    }
+
+    public function template()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        // Headers
+        $headers = [
+            'Lokasi Pekerjaan', 'Ruang', 'Jenis Pekerjaan', 'Type/Merk', 'Qty', 
+            'Satuan', 'Teknisi (Pisahkan dengan koma)', 'Tgl Mulai (YYYY-MM-DD)', 
+            'Tgl Selesai (YYYY-MM-DD)', 'Kerusakan', 'Action', 'Pergantian Perangkat', 
+            'Keterangan Tambahan', 'Catatan Lainnya', 'Harga Barang', 
+            'Pengantaran Perangkat', 'Status (DONE/PROSES/PENDING)'
+        ];
+        
+        $sheet->fromArray([$headers], NULL, 'A1');
+        
+        // Auto size columns
+        foreach (range('A', 'Q') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+        
+        // Sample data
+        $sample = [
+            'POLDA NTB (RESKRIMSUS)', 'RUMDIN', 'AC', 'DAIKIN 1 PK', 1, 
+            'Unit', 'MISDAN, ANDRI PRATAMA', '2026-08-01', 
+            '2026-08-02', 'Tidak dingin', 'Cleaning dan tambah freon', 'Freon R32', 
+            '', '', 150000, 
+            '', 'DONE'
+        ];
+        $sheet->fromArray([$sample], NULL, 'A2');
+
+        $writer = new Xlsx($spreadsheet);
+        
+        return response()->streamDownload(function() use ($writer) {
+            $writer->save('php://output');
+        }, 'Template_Import_Sparepart.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }
