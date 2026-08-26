@@ -319,6 +319,7 @@
 
         <select name="status" class="form-select-custom" onchange="this.form.submit()">
             <option value="">Semua Status Approval</option>
+            <option value="pending_leader" {{ request('status')=='pending_leader'?'selected':'' }}>Menunggu Leader</option>
             <option value="pending_manager" {{ request('status')=='pending_manager'?'selected':'' }}>Menunggu Manager</option>
             <option value="pending_accounting" {{ request('status')=='pending_accounting'?'selected':'' }}>Menunggu Accounting</option>
             <option value="pending_direktur" {{ request('status')=='pending_direktur'?'selected':'' }}>Menunggu Direktur</option>
@@ -356,7 +357,7 @@
                     <th style="text-align:center;">TOTAL DANA</th>
                     <th style="text-align:center;">STATUS PEMBAYARAN</th>
                     <th style="text-align:center;">PROGRESS APPROVAL</th>
-                    <th style="text-align:center;" width="150">AKSI</th>
+                    <th style="text-align:center;" width="180">AKSI</th>
                 </tr>
             </thead>
             <tbody>
@@ -411,7 +412,7 @@
                             $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
                             $statusText = 'Menunggu Manager';
 
-                            if ($item->status === 'pending_manager') {
+                            if ($item->status === 'pending_leader' || $item->status === 'pending_manager') {
                                 $stepCount = 1;
                                 $statusText = 'Menunggu Manager';
                                 $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
@@ -423,12 +424,8 @@
                                 $stepCount = 3;
                                 $statusText = 'Disetujui Accounting – Menunggu Direktur';
                                 $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
-                            } elseif ($item->status === 'pending_penasihat') {
-                                $stepCount = 4;
-                                $statusText = 'Disetujui Direktur – Menunggu Penasihat';
-                                $badgeStyle = 'background:#f8fafc; color:#475569; border:1px solid #cbd5e1;';
-                            } elseif ($item->status === 'approved') {
-                                $stepCount = 5;
+                            } elseif ($item->status === 'pending_penasihat' || $item->status === 'approved') {
+                                $stepCount = 3;
                                 $statusText = 'Disetujui (Lengkap)';
                                 $badgeStyle = 'background:#ecfdf5; color:#059669; border:1px solid #a7f3d0;';
                             } elseif ($item->status === 'rejected') {
@@ -443,13 +440,37 @@
                         </span>
 
                         <div class="stepper-dots">
-                            @for($d = 1; $d <= 5; $d++)
+                            @for($d = 1; $d <= 3; $d++)
                                 <span class="stepper-dot {{ $d <= $stepCount ? 'active' : 'inactive' }}"></span>
                             @endfor
                         </div>
                     </td>
                     <td style="text-align:center;">
+                        @php
+                            $userRole = auth()->user()->role;
+                            $canApprove = false;
+                            if (in_array($item->status, ['pending_leader', 'pending_manager']) && in_array($userRole, ['manager', 'admin'])) $canApprove = true;
+                            if ($item->status === 'pending_accounting' && in_array($userRole, ['accounting', 'direktur', 'admin'])) $canApprove = true;
+                            if (in_array($item->status, ['pending_direktur', 'pending_penasihat']) && in_array($userRole, ['direktur', 'accounting', 'admin'])) $canApprove = true;
+
+                            $canReject = $canApprove || (in_array($userRole, ['manager', 'accounting', 'direktur', 'admin']) && !in_array($item->status, ['approved', 'rejected']));
+                        @endphp
                         <div class="btn-action-group">
+                            @if($canApprove)
+                                <form action="{{ route('engineering.pengajuan_perangkat.approve', $item->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Setujui pengajuan ini?');">
+                                    @csrf
+                                    <button type="submit" class="btn-tbl-action" title="Setujui Pengajuan" style="color:#059669; border-color:#a7f3d0; background:#ecfdf5;">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if($canReject)
+                                <button type="button" class="btn-tbl-action" onclick="openRejectModal({{ json_encode($item) }})" title="Tolak Pengajuan" style="color:#dc2626; border-color:#fecaca; background:#fef2f2;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            @endif
+
                             <button type="button" class="btn-tbl-action btn-view" onclick="viewDetailModal({{ json_encode($item) }})" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -458,17 +479,21 @@
                                 <i class="fas fa-print"></i>
                             </a>
 
-                            <button type="button" class="btn-tbl-action btn-edit" onclick="openEditModal({{ json_encode($item) }})" title="Edit">
-                                <i class="fas fa-pen"></i>
-                            </button>
-
-                            <form action="{{ route('engineering.pengajuan_perangkat.destroy', $item->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Hapus data pengajuan ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-tbl-action btn-delete" title="Hapus">
-                                    <i class="fas fa-trash"></i>
+                            @if(in_array($userRole, ['admin', 'manager', 'leader']) || $item->user_id === auth()->id())
+                                <button type="button" class="btn-tbl-action btn-edit" onclick="openEditModal({{ json_encode($item) }})" title="Edit">
+                                    <i class="fas fa-pen"></i>
                                 </button>
-                            </form>
+                            @endif
+
+                            @if(in_array($userRole, ['admin', 'manager']))
+                                <form action="{{ route('engineering.pengajuan_perangkat.destroy', $item->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Hapus data pengajuan ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-tbl-action btn-delete" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </td>
                 </tr>
@@ -649,6 +674,31 @@
                 <i class="fas fa-print"></i> Cetak Dokumen
             </a>
         </div>
+    </div>
+</div>
+
+<!-- Modal Penolakan -->
+<div class="modal-overlay" id="rejectModal">
+    <div class="modal" style="max-width: 480px; width: 90%;">
+        <div class="modal-header">
+            <h3 class="modal-title" style="color:#dc2626; display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-exclamation-triangle"></i> Tolak Pengajuan Perangkat
+            </h3>
+            <button class="btn-icon" onclick="closeModal('rejectModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="rejectForm" method="POST">
+            @csrf
+            <div style="padding: 10px 0;">
+                <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Alasan Penolakan <span style="color:#dc2626;">*</span></label>
+                <textarea name="alasan_penolakan" rows="3" required placeholder="Tuliskan alasan penolakan secara jelas..." style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:13px; outline:none; font-family:inherit;"></textarea>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+                <button type="button" class="btn btn-outline" onclick="closeModal('rejectModal')">Batal</button>
+                <button type="submit" class="btn btn-primary" style="background:#dc2626; border-color:#dc2626;">
+                    <i class="fas fa-times-circle"></i> Konfirmasi Penolakan
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -875,6 +925,11 @@ function openEditModal(item) {
     if (details.no_pengajuan) {
         document.querySelector('input[name="no_pengajuan"]').value = details.no_pengajuan;
     }
+}
+
+function openRejectModal(item) {
+    document.getElementById('rejectForm').action = '/engineering/pengajuan-perangkat/' + item.id + '/reject';
+    openModal('rejectModal');
 }
 </script>
 @endsection

@@ -57,7 +57,7 @@
         style="height:38px;display:inline-flex;align-items:center" title="Reset Filter"><i class="fas fa-redo"></i></a>
       <button type="button" class="btn btn-outline" style="height:38px" onclick="openModal('importModal')"><i
           class="fas fa-upload"></i> Import</button>
-      <button type="button" class="btn btn-primary" style="height:38px" onclick="openModal('addModal')"><i
+      <button type="button" class="btn btn-primary" style="height:38px" onclick="openAddModal()"><i
           class="fas fa-plus"></i> Tambah</button>
     </form>
   </div>
@@ -247,8 +247,8 @@
               placeholder="Tindakan yang dilakukan..."></textarea></div>
         </div>
         <div class="grid-2">
-          <div class="form-group"><label>Foto Masuk (Check-in)</label><input type="file" name="foto_masuk"
-              accept="image/*"></div>
+          <div class="form-group"><label>Pergantian Perangkat</label><input type="text" name="pergantian_perangkat"
+              placeholder="Pergantian perangkat..."></div>
           <div class="form-group"><label>Keterangan Tambahan</label><input type="text" name="keterangan_tambahan"
               placeholder="Keterangan tambahan..."></div>
         </div>
@@ -259,6 +259,67 @@
         </div>
         <div class="form-group"><label>Catatan Lainnya</label><textarea name="keterangan" rows="1"
             placeholder="Catatan..."></textarea></div>
+
+        <div style="border-top: 1px solid var(--border); margin: 15px 0 10px; padding-top: 15px; font-weight: bold; font-size: 13px; color: var(--primary); display: flex; align-items: center; justify-content: space-between;">
+          <span><i class="fas fa-camera"></i> DOKUMENTASI & BERITA ACARA</span>
+          <span style="font-size: 11px; font-weight: normal; color: var(--text2);"><i class="fab fa-whatsapp" style="color: #25D366; font-size: 13px;"></i> Drag/Drop & Paste dari WA</span>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Foto Masuk (Check-in)</label>
+            <div class="upload-dropzone" id="add_dz_masuk" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="foto_masuk" accept="image/*" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-sign-in-alt"></i></div>
+                <span class="upload-title">Foto Masuk (Check-in)</span>
+                <span class="upload-sub">Drag & Drop foto di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Foto Proses</label>
+            <div class="upload-dropzone" id="add_dz_proses" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="foto_proses" accept="image/*" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-tools"></i></div>
+                <span class="upload-title">Foto Proses Perbaikan</span>
+                <span class="upload-sub">Drag & Drop foto di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Foto Keluar (Check-out)</label>
+            <div class="upload-dropzone" id="add_dz_keluar" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="foto_keluar" accept="image/*" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-sign-out-alt"></i></div>
+                <span class="upload-title">Foto Keluar (Check-out)</span>
+                <span class="upload-sub">Drag & Drop foto di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>File BA (Sudah TTD)</label>
+            <div class="upload-dropzone" id="add_dz_ba" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="file_ba" accept="image/*,application/pdf,.doc,.docx" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-file-signature"></i></div>
+                <span class="upload-title">File / Foto BA Signed</span>
+                <span class="upload-sub">Drag & Drop file di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
           <button type="button" class="btn btn-outline" onclick="closeModal('addModal')">Batal</button>
           <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
@@ -349,32 +410,68 @@
         <div class="form-group"><label>Catatan Lainnya</label><textarea name="keterangan" id="e_keterangan"
             rows="1"></textarea></div>
 
-        <div
-          style="border-top: 1px solid var(--border); margin: 15px 0 10px; padding-top: 15px; font-weight: bold; font-size: 13px; color: var(--primary)">
-          <i class="fas fa-camera"></i> DOKUMENTASI & BERITA ACARA
+        <div style="border-top: 1px solid var(--border); margin: 15px 0 10px; padding-top: 15px; font-weight: bold; font-size: 13px; color: var(--primary); display: flex; align-items: center; justify-content: space-between;">
+          <span><i class="fas fa-camera"></i> DOKUMENTASI & BERITA ACARA</span>
+          <span style="font-size: 11px; font-weight: normal; color: var(--text2);"><i class="fab fa-whatsapp" style="color: #25D366; font-size: 13px;"></i> Drag/Drop & Paste dari WA</span>
         </div>
         <div class="grid-2">
           <div class="form-group">
             <label>Foto Masuk (Check-in)</label>
-            <input type="file" name="foto_masuk" accept="image/*">
-            <div id="e_preview_masuk" style="margin-top: 4px; font-size: 11px;"></div>
+            <div class="upload-dropzone" id="edit_dz_masuk" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="foto_masuk" accept="image/*" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-sign-in-alt"></i></div>
+                <span class="upload-title">Upload Foto Masuk Baru</span>
+                <span class="upload-sub">Drag & Drop foto di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+            <div id="e_preview_masuk"></div>
           </div>
           <div class="form-group">
             <label>Foto Proses</label>
-            <input type="file" name="foto_proses" accept="image/*">
-            <div id="e_preview_proses" style="margin-top: 4px; font-size: 11px;"></div>
+            <div class="upload-dropzone" id="edit_dz_proses" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="foto_proses" accept="image/*" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-tools"></i></div>
+                <span class="upload-title">Upload Foto Proses Baru</span>
+                <span class="upload-sub">Drag & Drop foto di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+            <div id="e_preview_proses"></div>
           </div>
         </div>
         <div class="grid-2">
           <div class="form-group">
             <label>Foto Keluar (Check-out)</label>
-            <input type="file" name="foto_keluar" accept="image/*">
-            <div id="e_preview_keluar" style="margin-top: 4px; font-size: 11px;"></div>
+            <div class="upload-dropzone" id="edit_dz_keluar" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="foto_keluar" accept="image/*" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-sign-out-alt"></i></div>
+                <span class="upload-title">Upload Foto Keluar Baru</span>
+                <span class="upload-sub">Drag & Drop foto di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+            <div id="e_preview_keluar"></div>
           </div>
           <div class="form-group" id="ba_upload_container">
             <label>File BA (Sudah TTD / Overwrite)</label>
-            <input type="file" name="file_ba" accept="image/*,application/pdf,.doc,.docx">
-            <div id="e_preview_ba" style="margin-top: 4px; font-size: 11px;"></div>
+            <div class="upload-dropzone" id="edit_dz_ba" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
+              <input type="file" name="file_ba" accept="image/*,application/pdf,.doc,.docx" style="display:none">
+              <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
+                <div class="upload-icon-circle"><i class="fas fa-file-signature"></i></div>
+                <span class="upload-title">Upload File BA Signed Baru</span>
+                <span class="upload-sub">Drag & Drop file di sini, atau Klik</span>
+                <span class="upload-badge"><i class="fab fa-whatsapp"></i> Paste (Ctrl+V) dari WA</span>
+              </div>
+              <div class="upload-preview" style="display:none; width: 100%;"></div>
+            </div>
+            <div id="e_preview_ba"></div>
           </div>
         </div>
 
@@ -479,14 +576,206 @@
       }
     }
 
+    const dropzoneIds = [
+      'add_dz_masuk', 'add_dz_proses', 'add_dz_keluar', 'add_dz_ba',
+      'edit_dz_masuk', 'edit_dz_proses', 'edit_dz_keluar', 'edit_dz_ba'
+    ];
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function formatBytes(bytes, decimals = 1) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    function setupDropzone(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const fileInput = container.querySelector('input[type="file"]');
+      const placeholder = container.querySelector('.upload-placeholder');
+      const preview = container.querySelector('.upload-preview');
+
+      if (!fileInput) return;
+
+      container.setAttribute('tabindex', '0');
+
+      container.addEventListener('click', (e) => {
+        if (e.target.closest('.remove-file-btn') || e.target.closest('a')) return;
+        fileInput.click();
+      });
+
+      container.addEventListener('focus', () => {
+        document.querySelectorAll('.upload-dropzone').forEach(el => el.classList.remove('dz-focused'));
+        container.classList.add('dz-focused');
+      });
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        container.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          container.classList.add('drag-active');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        container.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          container.classList.remove('drag-active');
+        }, false);
+      });
+
+      container.addEventListener('drop', async (e) => {
+        const dt = e.dataTransfer;
+        if (!dt) return;
+
+        if (dt.files && dt.files.length > 0) {
+          applyFile(dt.files[0]);
+        } else {
+          const html = dt.getData('text/html');
+          const match = html && html.match(/src=["'](.*?)["']/);
+          const url = match ? match[1] : dt.getData('text/uri-list');
+
+          if (url) {
+            try {
+              const res = await fetch(url);
+              const blob = await res.blob();
+              const ext = (blob.type && blob.type.split('/')[1]) || 'png';
+              const file = new File([blob], `wa_dropped_${Date.now()}.${ext}`, { type: blob.type || 'image/png' });
+              applyFile(file);
+            } catch (err) {
+              console.error('Gagal mengambil gambar dari URL drag:', err);
+            }
+          }
+        }
+      });
+
+      container.addEventListener('paste', (e) => {
+        processPaste(e);
+      });
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files[0]) {
+          renderPreview(fileInput.files[0]);
+        }
+      });
+
+      function processPaste(e) {
+        const cData = e.clipboardData || window.clipboardData;
+        if (!cData || !cData.items) return;
+
+        for (let i = 0; i < cData.items.length; i++) {
+          const item = cData.items[i];
+          if (item.type.indexOf('image') !== -1 || item.kind === 'file') {
+            const file = item.getAsFile();
+            if (file) {
+              e.preventDefault();
+              e.stopPropagation();
+              const ext = (file.type && file.type.split('/')[1]) || 'png';
+              const namedFile = new File([file], `wa_paste_${Date.now()}.${ext}`, { type: file.type || 'image/png' });
+              applyFile(namedFile);
+              break;
+            }
+          }
+        }
+      }
+
+      function applyFile(file) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+        renderPreview(file);
+      }
+
+      function renderPreview(file) {
+        if (placeholder) placeholder.style.display = 'none';
+        if (!preview) return;
+
+        preview.style.display = 'flex';
+        const isImg = file.type.startsWith('image/');
+
+        if (isImg) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            preview.innerHTML = `
+              <div class="preview-thumb-wrap">
+                <img src="${e.target.result}" alt="Preview">
+                <button type="button" class="remove-file-btn" title="Hapus foto"><i class="fas fa-times"></i></button>
+              </div>
+              <div class="preview-file-info">
+                <span class="preview-filename">${escapeHtml(file.name)}</span> (${formatBytes(file.size)})
+              </div>
+            `;
+            bindRemove();
+          };
+          reader.readAsDataURL(file);
+        } else {
+          preview.innerHTML = `
+            <div class="preview-thumb-wrap" style="background:var(--surface); flex-direction:column; gap:4px; border-style:dashed;">
+              <i class="fas fa-file-pdf" style="font-size:28px; color:var(--primary);"></i>
+              <button type="button" class="remove-file-btn" title="Hapus file"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="preview-file-info">
+              <span class="preview-filename">${escapeHtml(file.name)}</span> (${formatBytes(file.size)})
+            </div>
+          `;
+          bindRemove();
+        }
+      }
+
+      function bindRemove() {
+        const btn = preview.querySelector('.remove-file-btn');
+        if (btn) {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetDropzone();
+          });
+        }
+      }
+
+      function resetDropzone() {
+        fileInput.value = '';
+        if (preview) {
+          preview.innerHTML = '';
+          preview.style.display = 'none';
+        }
+        if (placeholder) {
+          placeholder.style.display = 'flex';
+        }
+      }
+
+      container.resetDropzone = resetDropzone;
+    }
+
+    function openAddModal() {
+      ['add_dz_masuk', 'add_dz_proses', 'add_dz_keluar', 'add_dz_ba'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.resetDropzone) el.resetDropzone();
+      });
+      openModal('addModal');
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const statusSelect = document.getElementById('e_status');
       if (statusSelect) {
         statusSelect.addEventListener('change', toggleBAUpload);
       }
+      dropzoneIds.forEach(id => setupDropzone(id));
     });
 
     function editSparepart(row) {
+      ['edit_dz_masuk', 'edit_dz_proses', 'edit_dz_keluar', 'edit_dz_ba'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.resetDropzone) el.resetDropzone();
+      });
       const base = '{{ url("engineering/sparepart") }}/';
       document.getElementById('editForm').action = base + row.id;
       document.getElementById('e_lokasi').value = row.lokasi_pekerjaan || '';
@@ -525,30 +814,46 @@
 
       const previewMasuk = document.getElementById('e_preview_masuk');
       if (row.foto_masuk) {
-        previewMasuk.innerHTML = `<a href="${baseStorage + row.foto_masuk}" target="_blank" style="color: var(--primary); font-weight: 500;"><i class="fas fa-image"></i> Lihat Foto Masuk</a>`;
+        previewMasuk.innerHTML = `
+          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
+            <span style="color: var(--primary); font-weight: 600;"><i class="fas fa-image"></i> Foto Masuk Tersimpan</span>
+            <a href="${baseStorage + row.foto_masuk}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto;"><i class="fas fa-external-link-alt"></i> Lihat</a>
+          </div>`;
       } else {
-        previewMasuk.innerHTML = '<span style="color: var(--text2);">Belum ada foto</span>';
+        previewMasuk.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada foto tersimpan</div>';
       }
 
       const previewProses = document.getElementById('e_preview_proses');
       if (row.foto_proses) {
-        previewProses.innerHTML = `<a href="${baseStorage + row.foto_proses}" target="_blank" style="color: var(--primary); font-weight: 500;"><i class="fas fa-image"></i> Lihat Foto Proses</a>`;
+        previewProses.innerHTML = `
+          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
+            <span style="color: var(--primary); font-weight: 600;"><i class="fas fa-image"></i> Foto Proses Tersimpan</span>
+            <a href="${baseStorage + row.foto_proses}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto;"><i class="fas fa-external-link-alt"></i> Lihat</a>
+          </div>`;
       } else {
-        previewProses.innerHTML = '<span style="color: var(--text2);">Belum ada foto</span>';
+        previewProses.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada foto tersimpan</div>';
       }
 
       const previewKeluar = document.getElementById('e_preview_keluar');
       if (row.foto_keluar) {
-        previewKeluar.innerHTML = `<a href="${baseStorage + row.foto_keluar}" target="_blank" style="color: var(--primary); font-weight: 500;"><i class="fas fa-image"></i> Lihat Foto Keluar</a>`;
+        previewKeluar.innerHTML = `
+          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
+            <span style="color: var(--primary); font-weight: 600;"><i class="fas fa-image"></i> Foto Keluar Tersimpan</span>
+            <a href="${baseStorage + row.foto_keluar}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto;"><i class="fas fa-external-link-alt"></i> Lihat</a>
+          </div>`;
       } else {
-        previewKeluar.innerHTML = '<span style="color: var(--text2);">Belum ada foto</span>';
+        previewKeluar.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada foto tersimpan</div>';
       }
 
       const previewBA = document.getElementById('e_preview_ba');
       if (row.file_ba) {
-        previewBA.innerHTML = `<a href="${baseStorage + row.file_ba}" target="_blank" style="color: var(--success); font-weight: 600;"><i class="fas fa-file-contract"></i> Lihat BA Signed</a>`;
+        previewBA.innerHTML = `
+          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
+            <span style="color: var(--success); font-weight: 600;"><i class="fas fa-file-contract"></i> BA Signed Tersimpan</span>
+            <a href="${baseStorage + row.file_ba}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto; border-color: var(--success); color: var(--success);"><i class="fas fa-external-link-alt"></i> Lihat</a>
+          </div>`;
       } else {
-        previewBA.innerHTML = '<span style="color: var(--text2);">Belum ada BA yang diupload</span>';
+        previewBA.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada BA yang diupload</div>';
       }
 
       toggleBAUpload();
@@ -720,7 +1025,8 @@
       width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-    .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius-sm); }
+      border-radius: var(--radius-sm);
+    }
     table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1500px; }
     table th { 
       background: var(--surface2) !important; 
@@ -754,5 +1060,153 @@
     }
     html.dark .sticky-col { background: var(--surface) !important; }
     html.dark .sticky-col-head { background: var(--surface2) !important; }
+
+    /* Drag & Drop Upload Zone Styling */
+    .upload-dropzone {
+      border: 2px dashed var(--border) !important;
+      border-radius: var(--radius-sm) !important;
+      padding: 16px 12px !important;
+      text-align: center !important;
+      background: var(--surface2) !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease-in-out !important;
+      position: relative !important;
+      min-height: 125px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      outline: none !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .upload-dropzone:hover, .upload-dropzone:focus, .upload-dropzone.dz-focused {
+      border-color: var(--primary) !important;
+      background: rgba(59, 130, 246, 0.05) !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    }
+    .upload-dropzone.drag-active {
+      border-color: #25D366 !important;
+      background: rgba(37, 211, 102, 0.1) !important;
+      border-style: solid !important;
+      transform: scale(1.02) !important;
+    }
+    .upload-placeholder {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      color: var(--text2) !important;
+      pointer-events: none !important;
+      width: 100% !important;
+    }
+    .upload-icon-circle {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 50% !important;
+      background: rgba(59, 130, 246, 0.1) !important;
+      color: var(--primary) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 16px !important;
+      margin-bottom: 2px !important;
+      transition: transform 0.2s ease !important;
+    }
+    .upload-dropzone:hover .upload-icon-circle {
+      transform: scale(1.1) !important;
+      background: var(--primary) !important;
+      color: #ffffff !important;
+    }
+    .upload-title {
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      color: var(--text) !important;
+      display: block !important;
+      line-height: 1.3 !important;
+      text-align: center !important;
+    }
+    .upload-sub {
+      font-size: 11px !important;
+      color: var(--text2) !important;
+      display: block !important;
+      line-height: 1.3 !important;
+      text-align: center !important;
+    }
+    .upload-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 3px 8px !important;
+      border-radius: 12px !important;
+      background: rgba(37, 211, 102, 0.12) !important;
+      color: #16a34a !important;
+      font-size: 10px !important;
+      font-weight: 600 !important;
+      margin-top: 3px !important;
+    }
+    .upload-preview {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      width: 100% !important;
+      position: relative !important;
+    }
+    .preview-thumb-wrap {
+      position: relative !important;
+      width: 100% !important;
+      height: 110px !important;
+      overflow: hidden !important;
+      border-radius: 8px !important;
+      border: 1px solid var(--border) !important;
+      background: #0f172a !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
+    }
+    .preview-thumb-wrap img {
+      width: 100% !important;
+      height: 110px !important;
+      object-fit: cover !important;
+    }
+    .remove-file-btn {
+      position: absolute !important;
+      top: 6px !important;
+      right: 6px !important;
+      background: rgba(239, 68, 68, 0.95) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 50% !important;
+      width: 24px !important;
+      height: 24px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 11px !important;
+      cursor: pointer !important;
+      transition: transform 0.15s ease, background 0.15s ease !important;
+      z-index: 10 !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    }
+    .remove-file-btn:hover {
+      background: #dc2626 !important;
+      transform: scale(1.15) !important;
+    }
+    .preview-file-info {
+      font-size: 10px !important;
+      color: var(--text) !important;
+      font-weight: 600 !important;
+      margin-top: 5px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 100% !important;
+      background: var(--surface) !important;
+      padding: 2px 8px !important;
+      border-radius: 4px !important;
+      border: 1px solid var(--border) !important;
+    }
   </style>
 @endsection

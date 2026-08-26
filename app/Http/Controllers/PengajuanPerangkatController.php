@@ -84,6 +84,9 @@ class PengajuanPerangkatController extends Controller
         $jumlahStr = $totalQty > 0 ? $totalQty . ' Unit' : ($req->jumlah ?: '1 Unit');
         $alasanStr = !empty($details['no_pengajuan']) ? "No: {$details['no_pengajuan']} ({$details['divisi']})" : ($req->alasan ?: 'Pengajuan Perangkat');
 
+        $user = auth()->user();
+        $initialStatus = ($user->role === 'karyawan') ? 'pending_leader' : 'pending_manager';
+
         $item = PengajuanPerangkat::create([
             'user_id' => auth()->id(),
             'nama_perangkat' => $namaPerangkat,
@@ -105,11 +108,11 @@ class PengajuanPerangkatController extends Controller
         $user = auth()->user();
         $role = $user->role;
 
-        if ($role === 'manager' && $item->status === 'pending_manager') {
+        if (in_array($role, ['manager', 'admin']) && in_array($item->status, ['pending_manager', 'pending_leader'])) {
             $item->update(['status' => 'pending_accounting']);
-        } elseif ($role === 'accounting' && $item->status === 'pending_accounting') {
+        } elseif (in_array($role, ['accounting', 'admin']) && $item->status === 'pending_accounting') {
             $item->update(['status' => 'pending_direktur']);
-        } elseif ($role === 'direktur' && $item->status === 'pending_direktur') {
+        } elseif (in_array($role, ['direktur', 'accounting', 'admin']) && in_array($item->status, ['pending_direktur', 'pending_accounting', 'pending_penasihat'])) {
             $item->update(['status' => 'approved']);
         } else {
             return back()->with('error', 'Anda tidak memiliki akses untuk menyetujui tahap ini.');
@@ -120,6 +123,13 @@ class PengajuanPerangkatController extends Controller
 
     public function reject(Request $req, PengajuanPerangkat $item)
     {
+        $user = auth()->user();
+        $role = $user->role;
+
+        if ($role === 'karyawan') {
+            return back()->with('error', 'Karyawan tidak memiliki hak untuk menolak pengajuan.');
+        }
+
         $req->validate([
             'alasan_penolakan' => 'required'
         ]);
