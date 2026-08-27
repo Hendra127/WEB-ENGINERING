@@ -520,7 +520,7 @@
     <div class="modal" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0; border-radius: 12px;">
         <div class="modal-header" style="background: #15803d; color: #ffffff; padding: 14px 20px; border-top-left-radius: 12px; border-top-right-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
             <h3 class="modal-title" style="color: #ffffff; font-size: 17px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-shopping-cart" id="modalHeaderIcon"></i> <span id="modalHeaderTitle">Pengajuan Pembelian Baru</span>
+                <i class="fas fa-desktop" id="modalHeaderIcon"></i> <span id="modalHeaderTitle">Pengajuan Perangkat</span>
             </h3>
             <button type="button" onclick="closeModal('addModal')" style="background: none; border: none; color: #ffffff; font-size: 18px; cursor: pointer;"><i class="fas fa-times"></i></button>
         </div>
@@ -529,18 +529,12 @@
             @csrf
             
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 20px;">
-                <div style="font-size: 13px; font-weight: 700; color: #2563eb; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <div style="font-size: 13px; font-weight: 700; color: #2563eb; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                     <i class="fas fa-cog"></i> Tipe Pengajuan
                 </div>
-                <div style="display: flex; gap: 24px; align-items: center;">
-                    <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">
-                        <input type="radio" name="tipe_pengajuan" value="pembelian" checked onchange="updateTipePengajuan(this.value)">
-                        <i class="fas fa-shopping-cart" style="color:#15803d"></i> Pembelian Baru (Stok)
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; font-size: 14px; color: #64748b;">
-                        <input type="radio" name="tipe_pengajuan" value="repair" onchange="updateTipePengajuan(this.value)">
-                        <i class="fas fa-tools" style="color:#d97706"></i> Repair Perangkat
-                    </label>
+                <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #0f172a;">
+                    <input type="hidden" name="tipe_pengajuan" value="pembelian">
+                    <i class="fas fa-desktop" style="color:#15803d"></i> Pengajuan Perangkat
                 </div>
             </div>
 
@@ -558,10 +552,6 @@
                 </div>
             </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">No. Pengajuan</label>
-                <input type="text" name="no_pengajuan" placeholder="Contoh: 001/SP/2026" required>
-            </div>
 
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
 
@@ -600,31 +590,38 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
                     <div>
                         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Pemohon</label>
-                        <input type="text" name="pemohon_nama" value="Rossie Maulana Septian, S.Kom" style="margin-bottom: 6px;" placeholder="Nama">
-                        <input type="text" name="pemohon_jabatan" value="NOC Leader" placeholder="Jabatan">
+                        <select name="pemohon_nama" style="margin-bottom: 6px; width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
+                            <option value="Misdan">Misdan</option>
+                            <option value="Lalu Taufik">Lalu Taufik</option>
+                        </select>
+                        <select name="pemohon_jabatan" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
+                            <option value="Leader Engineer">Leader Engineer</option>
+                            <option value="Leader VSAT">Leader VSAT</option>
+                            <option value="Leader Rumah Tangga">Leader Rumah Tangga</option>
+                        </select>
                     </div>
                     <div>
                         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Diverifikasi 1</label>
-                        <input type="text" name="verifikasi1_nama" value="Dimas Farid Awaludin, S.Kom" style="margin-bottom: 6px;" placeholder="Nama">
-                        <input type="text" name="verifikasi1_jabatan" value="Manager" placeholder="Jabatan">
+                        <input type="text" name="verifikasi1_nama" value="Dimas Farid Awaludin, S.Kom" readonly style="margin-bottom: 6px; background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Nama">
+                        <input type="text" name="verifikasi1_jabatan" value="Manager" readonly style="background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Jabatan">
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
                     <div>
                         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Diverifikasi 2</label>
-                        <input type="text" name="verifikasi2_nama" value="Baiq Nana Erlina, A.Md" style="margin-bottom: 6px;" placeholder="Nama">
-                        <input type="text" name="verifikasi2_jabatan" value="Accounting" placeholder="Jabatan">
+                        <input type="text" name="verifikasi2_nama" value="Baiq Nana Erlina, A.Md" readonly style="margin-bottom: 6px; background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Nama">
+                        <input type="text" name="verifikasi2_jabatan" value="Accounting" readonly style="background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Jabatan">
                     </div>
                     <div>
                         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Disetujui</label>
-                        <input type="text" name="disetujui_nama" value="Galuh Zakiyatun, S.Kom" style="margin-bottom: 6px;" placeholder="Nama">
-                        <input type="text" name="disetujui_jabatan" value="Direktur" placeholder="Jabatan">
+                        <input type="text" name="disetujui_nama" value="Galuh Zakiyatun, S.Kom" readonly style="margin-bottom: 6px; background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Nama">
+                        <input type="text" name="disetujui_jabatan" value="Direktur" readonly style="background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Jabatan">
                     </div>
                     <div>
                         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Mengetahui</label>
-                        <input type="text" name="mengetahui_nama" value="Raden Yuniarta Alba, S.Kom" style="margin-bottom: 6px;" placeholder="Nama">
-                        <input type="text" name="mengetahui_jabatan" value="Penasihat" placeholder="Jabatan">
+                        <input type="text" name="mengetahui_nama" value="Raden Yuniarta Alba, S.Kom" readonly style="margin-bottom: 6px; background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Nama">
+                        <input type="text" name="mengetahui_jabatan" value="Penasihat" readonly style="background: #f1f5f9; color: #475569; cursor: not-allowed;" placeholder="Jabatan">
                     </div>
                 </div>
             </div>
@@ -711,7 +708,7 @@ let itemIndex = 0;
 function openModal(id) { 
     document.getElementById(id).classList.add('open'); 
     if (id === 'addModal' && document.getElementById('deviceItemsWrapper').children.length === 0) {
-        addDeviceRow('ROUTER', 1, 50000, 'BMN', 'STOK', '-');
+        addDeviceRow('ROUTER', 1, 50000, 'STOK', '-');
     }
 }
 
@@ -724,12 +721,12 @@ function updateTipePengajuan(val) {
         headerTitle.innerText = 'Repair Perangkat';
         headerIcon.className = 'fas fa-tools';
     } else {
-        headerTitle.innerText = 'Pengajuan Pembelian Baru';
-        headerIcon.className = 'fas fa-shopping-cart';
+        headerTitle.innerText = 'Pengajuan Perangkat';
+        headerIcon.className = 'fas fa-desktop';
     }
 }
 
-function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, layanan = 'BMN', peruntukan = 'STOK', keterangan = '-') {
+function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, peruntukan = 'STOK', keterangan = '-') {
     const wrapper = document.getElementById('deviceItemsWrapper');
     const idx = itemIndex++;
 
@@ -769,11 +766,7 @@ function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, layanan = 'BMN',
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 10px;">
-            <div>
-                <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Layanan</label>
-                <input type="text" name="items[${idx}][layanan]" value="${layanan}" placeholder="BMN">
-            </div>
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
             <div>
                 <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Peruntukan</label>
                 <input type="text" name="items[${idx}][peruntukan]" value="${peruntukan}" placeholder="STOK">
@@ -922,8 +915,15 @@ function viewDetailModal(item) {
 function openEditModal(item) {
     openModal('addModal');
     const details = item.details || {};
-    if (details.no_pengajuan) {
-        document.querySelector('input[name="no_pengajuan"]').value = details.no_pengajuan;
+    if (details.tertanda) {
+        if (details.tertanda.pemohon_nama) {
+            const el = document.querySelector('select[name="pemohon_nama"]');
+            if (el) el.value = details.tertanda.pemohon_nama;
+        }
+        if (details.tertanda.pemohon_jabatan) {
+            const el = document.querySelector('select[name="pemohon_jabatan"]');
+            if (el) el.value = details.tertanda.pemohon_jabatan;
+        }
     }
 }
 

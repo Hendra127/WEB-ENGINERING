@@ -108,11 +108,11 @@
 
     @php
         $details = $item->details ?? [];
-        $tipe = isset($details['tipe_pengajuan']) && $details['tipe_pengajuan'] === 'repair' ? 'Repair Perangkat' : 'Pembelian Baru (Stok)';
+        $tipe = isset($details['tipe_pengajuan']) && $details['tipe_pengajuan'] === 'repair' ? 'Repair Perangkat' : 'Pengajuan Perangkat';
         $tempat = $details['tempat'] ?? 'Mataram';
         $tanggal = isset($details['tanggal']) ? date('d/m/Y', strtotime($details['tanggal'])) : $item->created_at->format('d/m/Y');
         $divisi = $details['divisi'] ?? 'Manage Service AI BAKTI';
-        $noPengajuan = $details['no_pengajuan'] ?? '-';
+        $noPengajuan = $details['no_pengajuan'] ?? '';
         $itemsList = $details['items'] ?? [];
         $grandTotal = $details['grand_total'] ?? 0;
         $terbilang = $details['terbilang'] ?? '-';
@@ -120,8 +120,8 @@
     @endphp
 
     <div class="header">
-        <h2>Form Pengajuan {{ $tipe }}</h2>
-        <p>No: {{ $noPengajuan }} | Divisi: {{ $divisi }}</p>
+        <h2>Form {{ $tipe }}</h2>
+        <p>@if(!empty($noPengajuan))No: {{ $noPengajuan }} | @endif Divisi: {{ $divisi }}</p>
     </div>
 
     <table class="meta-table">
@@ -147,7 +147,6 @@
                 <th width="50">QTY</th>
                 <th width="110">HARGA SATUAN</th>
                 <th width="110">TOTAL</th>
-                <th>LAYANAN</th>
                 <th>PERUNTUKAN</th>
                 <th>KETERANGAN</th>
             </tr>
@@ -161,7 +160,6 @@
                     <td style="text-align:center;">{{ $it['qty'] ?? 1 }}</td>
                     <td style="text-align:right;">Rp {{ number_format(floatval($it['harga_satuan'] ?? 0), 0, ',', '.') }}</td>
                     <td style="text-align:right; font-weight:bold;">Rp {{ number_format(floatval($it['total'] ?? 0), 0, ',', '.') }}</td>
-                    <td>{{ $it['layanan'] ?? '-' }}</td>
                     <td>{{ $it['peruntukan'] ?? '-' }}</td>
                     <td>{{ $it['keterangan'] ?? '-' }}</td>
                 </tr>
@@ -173,7 +171,6 @@
                     <td style="text-align:center;">{{ $item->jumlah }}</td>
                     <td style="text-align:right;">-</td>
                     <td style="text-align:right; font-weight:bold;">-</td>
-                    <td>-</td>
                     <td>-</td>
                     <td>{{ $item->alasan }}</td>
                 </tr>
@@ -195,8 +192,8 @@
     <div class="signatures-grid">
         <div class="sig-box">
             <div class="sig-title">Pemohon</div>
-            <div class="sig-name">{{ $tertanda['pemohon_nama'] ?? 'Rossie Maulana Septian, S.Kom' }}</div>
-            <div class="sig-role">{{ $tertanda['pemohon_jabatan'] ?? 'NOC Leader' }}</div>
+            <div class="sig-name">{{ $tertanda['pemohon_nama'] ?? 'Misdan' }}</div>
+            <div class="sig-role">{{ $tertanda['pemohon_jabatan'] ?? 'Leader Engineer' }}</div>
         </div>
         <div class="sig-box">
             <div class="sig-title">Diverifikasi 1</div>

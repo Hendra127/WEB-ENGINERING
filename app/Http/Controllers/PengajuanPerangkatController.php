@@ -58,8 +58,8 @@ class PengajuanPerangkatController extends Controller
             'grand_total' => (float)$req->input('grand_total', 0),
             'terbilang' => $req->input('terbilang', ''),
             'tertanda' => [
-                'pemohon_nama' => $req->input('pemohon_nama', 'Rossie Maulana Septian, S.Kom'),
-                'pemohon_jabatan' => $req->input('pemohon_jabatan', 'NOC Leader'),
+                'pemohon_nama' => $req->input('pemohon_nama', 'Misdan'),
+                'pemohon_jabatan' => $req->input('pemohon_jabatan', 'Leader Engineer'),
                 'verifikasi1_nama' => $req->input('verifikasi1_nama', 'Dimas Farid Awaludin, S.Kom'),
                 'verifikasi1_jabatan' => $req->input('verifikasi1_jabatan', 'Manager'),
                 'verifikasi2_nama' => $req->input('verifikasi2_nama', 'Baiq Nana Erlina, A.Md'),
