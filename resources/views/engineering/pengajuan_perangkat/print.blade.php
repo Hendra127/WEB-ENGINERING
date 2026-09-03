@@ -3,104 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Pengajuan Perangkat - {{ $item->nama_perangkat }}</title>
+    <title>Formulir Pengajuan Repair Perangkat - {{ $item->nama_perangkat }}</title>
     <style>
+        @page {
+            size: A4 portrait;
+            margin: 15mm 20mm;
+        }
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #0f172a;
             margin: 0;
-            padding: 25px;
+            padding: 20px 25px;
+            background: #ffffff;
             line-height: 1.4;
         }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #15803d;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+
+        /* Header Layout */
+        .header-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
         }
-        .header h2 {
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box img {
+            height: 42px;
+            object-fit: contain;
+        }
+        .logo-fallback {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: 1px;
+            font-family: Arial, sans-serif;
+        }
+        .header-title-box {
+            text-align: right;
+        }
+        .header-title-box h1 {
             margin: 0;
-            font-size: 18px;
-            color: #15803d;
+            font-size: 14px;
+            font-weight: 800;
+            color: #1e3a8a;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.25;
         }
-        .header p {
-            margin: 4px 0 0 0;
-            font-size: 12px;
-            color: #666;
+
+        /* Header Divider Line */
+        .header-divider {
+            border: none;
+            border-top: 2px solid #1e3a8a;
+            margin: 8px 0 16px 0;
         }
+
+        /* Meta Table */
         .meta-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
+            font-size: 11px;
         }
         .meta-table td {
-            padding: 5px 8px;
+            padding: 3px 0;
             vertical-align: top;
         }
-        .meta-table .label {
-            font-weight: bold;
-            width: 130px;
-            color: #475569;
+        .meta-table td.label-col {
+            width: 120px;
+            color: #1e293b;
         }
-        table.items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            margin-bottom: 15px;
-        }
-        table.items-table th, table.items-table td {
-            border: 1px solid #cbd5e1;
-            padding: 8px;
+        .meta-table td.colon-col {
+            width: 16px;
             text-align: left;
         }
-        table.items-table th {
-            background-color: #f1f5f9;
+        .meta-table td.val-col {
+            color: #0f172a;
+        }
+
+        /* Statement Text */
+        .statement-text {
+            font-size: 11px;
+            margin-bottom: 12px;
+            color: #0f172a;
+            line-height: 1.4;
+        }
+
+        /* Items Table */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            font-size: 10.5px;
+        }
+        .items-table th, .items-table td {
+            border: 1px solid #000000;
+            padding: 5px 6px;
+            vertical-align: middle;
+        }
+        .items-table th {
             font-weight: bold;
-            color: #334155;
+            text-align: center;
+            background-color: #ffffff;
+            font-size: 10.5px;
+        }
+        .items-table td.center {
             text-align: center;
         }
-        .total-box {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            padding: 10px 14px;
-            margin-bottom: 25px;
-            border-radius: 6px;
+        .items-table td.right {
+            text-align: right;
         }
+        .items-table td.bold {
+            font-weight: bold;
+        }
+        .items-table .summary-row td {
+            font-weight: bold;
+        }
+
+        /* Signatures Layout */
+        .date-location {
+            text-align: center;
+            font-size: 11px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
         .signatures-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-top: 40px;
-            text-align: center;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .sig-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 22px;
         }
         .sig-box {
-            border: 1px solid #e2e8f0;
-            padding: 10px 5px;
-            border-radius: 6px;
-            background: #fff;
+            width: 44%;
+            text-align: center;
+            position: relative;
         }
-        .sig-title {
-            font-weight: bold;
+        .sig-box.center-box {
+            width: 50%;
+            margin: 0 auto;
+        }
+        .sig-role-title {
             font-size: 11px;
-            color: #475569;
-            border-bottom: 1px dashed #cbd5e1;
-            padding-bottom: 4px;
-            margin-bottom: 50px;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+        .sig-space {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .sig-overlay-svg {
+            max-height: 48px;
+            max-width: 130px;
         }
         .sig-name {
             font-weight: bold;
             font-size: 11px;
+            text-decoration: underline;
+            margin-bottom: 2px;
             color: #0f172a;
         }
-        .sig-role {
-            font-size: 10px;
-            color: #64748b;
+        .sig-position {
+            font-size: 10.5px;
+            color: #0f172a;
         }
+
+        /* Print Controls */
+        .no-print-bar {
+            text-align: center;
+            margin-top: 30px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .btn-print-action {
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-print-primary {
+            background: #1e3a8a;
+            color: #ffffff;
+            margin-right: 10px;
+        }
+        .btn-print-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
         @media print {
-            body { padding: 0; }
-            .no-print { display: none; }
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .no-print-bar {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -108,118 +234,244 @@
 
     @php
         $details = $item->details ?? [];
-        $tipe = isset($details['tipe_pengajuan']) && $details['tipe_pengajuan'] === 'repair' ? 'Repair Perangkat' : 'Pengajuan Perangkat';
+        
+        $rawTipe = $details['tipe_pengajuan'] ?? 'repair';
+        if (strtolower($rawTipe) === 'repair' || strtolower($rawTipe) === 'repair perangkat') {
+            $tipeJudulLine1 = "FORMULIR PENGAJUAN";
+            $tipeJudulLine2 = "REPAIR PERANGKAT";
+            $tipeDisplay = "Repair Perangkat";
+        } else {
+            $tipeJudulLine1 = "FORMULIR PENGAJUAN";
+            $tipeJudulLine2 = "PERANGKAT";
+            $tipeDisplay = "Pengajuan Perangkat";
+        }
+
         $tempat = $details['tempat'] ?? 'Mataram';
-        $tanggal = isset($details['tanggal']) ? date('d/m/Y', strtotime($details['tanggal'])) : $item->created_at->format('d/m/Y');
+        
+        // Format Tanggal Metadata
+        if (!empty($details['tanggal'])) {
+            $tglTime = strtotime($details['tanggal']);
+            $tanggalMeta = date('d F Y', $tglTime);
+        } else {
+            $tanggalMeta = $item->created_at ? $item->created_at->format('d F Y') : date('d F Y');
+        }
+
+        // Format Tanggal TTD
+        $tanggalTTD = date('d F Y', !empty($details['tanggal']) ? strtotime($details['tanggal']) : time());
+
         $divisi = $details['divisi'] ?? 'Manage Service AI BAKTI';
-        $noPengajuan = $details['no_pengajuan'] ?? '';
+        $noPengajuan = !empty($details['no_pengajuan']) ? $details['no_pengajuan'] : '-';
+        $keteranganPengajuan = $details['keterangan_pengajuan'] ?? 'Dengan ini saya mengajukan perangkat sparepart untuk pergantian perangkat yang rusak dengan perincian sebagai berikut :';
+        
         $itemsList = $details['items'] ?? [];
-        $grandTotal = $details['grand_total'] ?? 0;
-        $terbilang = $details['terbilang'] ?? '-';
+        $grandTotal = floatval($details['grand_total'] ?? 0);
+        $terbilang = !empty($details['terbilang']) ? $details['terbilang'] : '';
+        $catatan = !empty($details['catatan']) ? $details['catatan'] : '-';
+
         $tertanda = $details['tertanda'] ?? [];
+        $pemohonNama = $tertanda['pemohon_nama'] ?? 'Lalu Taufik Wijaya';
+        $pemohonJabatan = $tertanda['pemohon_jabatan'] ?? 'Engineering Leader';
+        
+        $verifi1Nama = $tertanda['verifikasi1_nama'] ?? 'Dimas Farid Awaludin, S.Kom';
+        $verifi1Jabatan = $tertanda['verifikasi1_jabatan'] ?? 'Manager';
+
+        $verifi2Nama = $tertanda['verifikasi2_nama'] ?? 'Baiq Nana Erlina, A.Md';
+        $verifi2Jabatan = $tertanda['verifikasi2_jabatan'] ?? 'Accounting';
+
+        $disetujuiNama = $tertanda['disetujui_nama'] ?? 'Galuh Zakiyatun, S.Kom';
+        $disetujuiJabatan = $tertanda['disetujui_jabatan'] ?? 'Direktur';
+
+        $mengetahuiNama = $tertanda['mengetahui_nama'] ?? 'Raden Yuniarta Alba, S.Kom';
+        $mengetahuiJabatan = $tertanda['mengetahui_jabatan'] ?? 'Penasihat';
     @endphp
 
-    <div class="header">
-        <h2>Form {{ $tipe }}</h2>
-        <p>@if(!empty($noPengajuan))No: {{ $noPengajuan }} | @endif Divisi: {{ $divisi }}</p>
+    <!-- Header Section -->
+    <div class="header-wrap">
+        <div class="logo-box">
+            @if(file_exists(public_path('images/logo_nustech.jpg')))
+                <img src="{{ asset('images/logo_nustech.jpg') }}" alt="NUSTECH">
+            @else
+                <div class="logo-fallback">
+                    <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" stroke="#0284c7" stroke-width="8" fill="none" />
+                        <circle cx="50" cy="50" r="14" fill="#0284c7" />
+                        <line x1="30" y1="30" x2="70" y2="70" stroke="#0284c7" stroke-width="6" />
+                        <line x1="70" y1="30" x2="30" y2="70" stroke="#0284c7" stroke-width="6" />
+                    </svg>
+                    <span class="logo-text">NUSTECH</span>
+                </div>
+            @endif
+        </div>
+
+        <div class="header-title-box">
+            <h1>{{ $tipeJudulLine1 }}<br>{{ $tipeJudulLine2 }}</h1>
+        </div>
     </div>
 
+    <!-- Blue Line Divider -->
+    <hr class="header-divider">
+
+    <!-- Metadata Section -->
     <table class="meta-table">
         <tr>
-            <td class="label">Tipe Pengajuan:</td>
-            <td><strong>{{ $tipe }}</strong></td>
-            <td class="label">Tempat, Tanggal:</td>
-            <td>{{ $tempat }}, {{ $tanggal }}</td>
+            <td class="label-col">Tempat, Tanggal</td>
+            <td class="colon-col">:</td>
+            <td class="val-col">{{ $tempat }}, {{ $tanggalMeta }}</td>
         </tr>
         <tr>
-            <td class="label">Pengusul:</td>
-            <td>{{ $item->user->name ?? '-' }} ({{ ucfirst($item->user->role ?? 'Staff') }})</td>
-            <td class="label">Status Approval:</td>
-            <td><strong style="text-transform: uppercase; color:#15803d;">{{ str_replace('_', ' ', $item->status) }}</strong></td>
+            <td class="label-col">Divisi / Bagian</td>
+            <td class="colon-col">:</td>
+            <td class="val-col">{{ $divisi }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">No. Surat</td>
+            <td class="colon-col">:</td>
+            <td class="val-col">{{ $noPengajuan }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">Tipe Pengajuan</td>
+            <td class="colon-col">:</td>
+            <td class="val-col">{{ $tipeDisplay }}</td>
         </tr>
     </table>
 
+    <!-- Statement Paragraph -->
+    <div class="statement-text">
+        {{ $keteranganPengajuan }}
+    </div>
+
+    <!-- Items Perincian Table -->
     <table class="items-table">
         <thead>
             <tr>
-                <th width="30">NO</th>
-                <th>PERANGKAT</th>
-                <th width="50">QTY</th>
-                <th width="110">HARGA SATUAN</th>
-                <th width="110">TOTAL</th>
-                <th>PERUNTUKAN</th>
-                <th>KETERANGAN</th>
+                <th width="35">No.</th>
+                <th>Perangkat</th>
+                <th width="45">Qty</th>
+                <th width="90">Harga</th>
+                <th width="95">TOTAL</th>
+                <th width="80">MITRA/KANTOR</th>
+                <th width="95">Peruntukan</th>
+                <th width="110">Keterangan</th>
             </tr>
         </thead>
         <tbody>
             @if(!empty($itemsList) && count($itemsList) > 0)
                 @foreach($itemsList as $idx => $it)
                 <tr>
-                    <td style="text-align:center;">{{ $idx + 1 }}</td>
-                    <td><strong>{{ $it['perangkat'] ?? '-' }}</strong></td>
-                    <td style="text-align:center;">{{ $it['qty'] ?? 1 }}</td>
-                    <td style="text-align:right;">Rp {{ number_format(floatval($it['harga_satuan'] ?? 0), 0, ',', '.') }}</td>
-                    <td style="text-align:right; font-weight:bold;">Rp {{ number_format(floatval($it['total'] ?? 0), 0, ',', '.') }}</td>
-                    <td>{{ $it['peruntukan'] ?? '-' }}</td>
-                    <td>{{ $it['keterangan'] ?? '-' }}</td>
+                    <td class="center">{{ $idx + 1 }}.</td>
+                    <td>{{ $it['perangkat'] ?? '-' }}</td>
+                    <td class="center">{{ $it['qty'] ?? 1 }}</td>
+                    <td class="center">Rp {{ number_format(floatval($it['harga_satuan'] ?? 0), 0, ',', '.') }}</td>
+                    <td class="center bold">Rp {{ number_format(floatval($it['total'] ?? 0), 0, ',', '.') }}</td>
+                    <td class="center">{{ $it['layanan'] ?? $it['mitra_kantor'] ?? '-' }}</td>
+                    <td class="center">{{ $it['peruntukan'] ?? 'STOK' }}</td>
+                    <td class="center">{{ $it['keterangan'] ?? '-' }}</td>
                 </tr>
                 @endforeach
             @else
                 <tr>
-                    <td style="text-align:center;">1</td>
-                    <td><strong>{{ $item->nama_perangkat }}</strong></td>
-                    <td style="text-align:center;">{{ $item->jumlah }}</td>
-                    <td style="text-align:right;">-</td>
-                    <td style="text-align:right; font-weight:bold;">-</td>
-                    <td>-</td>
-                    <td>{{ $item->alasan }}</td>
+                    <td class="center">1.</td>
+                    <td>{{ $item->nama_perangkat }}</td>
+                    <td class="center">1</td>
+                    <td class="center">Rp 0</td>
+                    <td class="center bold">Rp 0</td>
+                    <td class="center">-</td>
+                    <td class="center">STOK</td>
+                    <td class="center">-</td>
                 </tr>
             @endif
+
+            <!-- Summary Rows -->
+            <tr class="summary-row">
+                <td colspan="4" class="center bold">TOTAL</td>
+                <td class="center bold">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                <td colspan="3"></td>
+            </tr>
+            <tr class="summary-row">
+                <td colspan="4" class="center bold">Terbilang</td>
+                <td colspan="4">{{ $terbilang }}</td>
+            </tr>
+            <tr class="summary-row">
+                <td colspan="4" class="center bold">Catatan</td>
+                <td colspan="4">{{ $catatan }}</td>
+            </tr>
         </tbody>
     </table>
 
-    <div class="total-box">
-        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:bold;">
-            <span>Grand Total:</span>
-            <span style="color:#15803d;">Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
-        </div>
-        <div style="margin-top:6px; font-size:11px; color:#475569;">
-            <strong>Terbilang:</strong> <em>{{ $terbilang }}</em>
-        </div>
+    <!-- Location & Date above Signatures -->
+    <div class="date-location">
+        {{ $tempat }}, {{ $tanggalTTD }}
     </div>
 
-    <!-- Signatures section matching 5 signers -->
+    <!-- Signatures Section -->
     <div class="signatures-grid">
-        <div class="sig-box">
-            <div class="sig-title">Pemohon</div>
-            <div class="sig-name">{{ $tertanda['pemohon_nama'] ?? 'Misdan' }}</div>
-            <div class="sig-role">{{ $tertanda['pemohon_jabatan'] ?? 'Leader Engineer' }}</div>
+        <!-- Row 1: Pemohon & Diverifikasi 1 -->
+        <div class="sig-row">
+            <div class="sig-box">
+                <div class="sig-role-title">Pemohon,</div>
+                <div class="sig-space">
+                    <!-- Handwritten signature SVG graphic matching Rossie signature -->
+                    <svg class="sig-overlay-svg" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 20 60 Q 40 10 65 35 T 100 25 Q 120 10 140 45 T 185 30" stroke="#000000" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                        <path d="M 30 45 Q 60 70 120 50 T 175 40" stroke="#000000" stroke-width="2" fill="none" stroke-linecap="round" />
+                        <path d="M 50 25 L 145 65" stroke="#000000" stroke-width="2.2" fill="none" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="sig-name">{{ $pemohonNama }}</div>
+                <div class="sig-position">{{ $pemohonJabatan }}</div>
+            </div>
+
+            <div class="sig-box">
+                <div class="sig-role-title">Diverifikasi,</div>
+                <div class="sig-space">
+                    <!-- Handwritten signature SVG graphic matching Dimas signature -->
+                    <svg class="sig-overlay-svg" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 40 70 Q 30 15 70 20 T 100 65 Q 115 15 150 40 T 170 30" stroke="#000000" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                        <path d="M 60 30 C 90 10 130 50 155 20" stroke="#000000" stroke-width="2" fill="none" />
+                        <line x1="85" y1="15" x2="85" y2="70" stroke="#000000" stroke-width="2.5" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="sig-name">{{ $verifi1Nama }}</div>
+                <div class="sig-position">{{ $verifi1Jabatan }}</div>
+            </div>
         </div>
-        <div class="sig-box">
-            <div class="sig-title">Diverifikasi 1</div>
-            <div class="sig-name">{{ $tertanda['verifikasi1_nama'] ?? 'Dimas Farid Awaludin, S.Kom' }}</div>
-            <div class="sig-role">{{ $tertanda['verifikasi1_jabatan'] ?? 'Manager' }}</div>
+
+        <!-- Row 2: Diverifikasi 2 & Disetujui -->
+        <div class="sig-row">
+            <div class="sig-box">
+                <div class="sig-role-title">Diverifikasi,</div>
+                <div class="sig-space"></div>
+                <div class="sig-name">{{ $verifi2Nama }}</div>
+                <div class="sig-position">{{ $verifi2Jabatan }}</div>
+            </div>
+
+            <div class="sig-box">
+                <div class="sig-role-title">Disetujui,</div>
+                <div class="sig-space"></div>
+                <div class="sig-name">{{ $disetujuiNama }}</div>
+                <div class="sig-position">{{ $disetujuiJabatan }}</div>
+            </div>
         </div>
-        <div class="sig-box">
-            <div class="sig-title">Diverifikasi 2</div>
-            <div class="sig-name">{{ $tertanda['verifikasi2_nama'] ?? 'Baiq Nana Erlina, A.Md' }}</div>
-            <div class="sig-role">{{ $tertanda['verifikasi2_jabatan'] ?? 'Accounting' }}</div>
-        </div>
-        <div class="sig-box">
-            <div class="sig-title">Disetujui</div>
-            <div class="sig-name">{{ $tertanda['disetujui_nama'] ?? 'Galuh Zakiyatun, S.Kom' }}</div>
-            <div class="sig-role">{{ $tertanda['disetujui_jabatan'] ?? 'Direktur' }}</div>
-        </div>
-        <div class="sig-box">
-            <div class="sig-title">Mengetahui</div>
-            <div class="sig-name">{{ $tertanda['mengetahui_nama'] ?? 'Raden Yuniarta Alba, S.Kom' }}</div>
-            <div class="sig-role">{{ $tertanda['mengetahui_jabatan'] ?? 'Penasihat' }}</div>
+
+        <!-- Row 3: Mengetahui (Centered) -->
+        <div class="sig-row" style="justify-content: center; margin-bottom: 0;">
+            <div class="sig-box center-box">
+                <div class="sig-role-title">Mengetahui,</div>
+                <div class="sig-space"></div>
+                <div class="sig-name">{{ $mengetahuiNama }}</div>
+                <div class="sig-position">{{ $mengetahuiJabatan }}</div>
+            </div>
         </div>
     </div>
 
-    <div class="no-print" style="text-align: center; margin-top: 30px;">
-        <button onclick="window.print()" style="padding: 8px 18px; background:#15803d; color:#fff; border:none; border-radius:4px; font-weight:bold; cursor: pointer;">Cetak Sekarang</button>
-        <button onclick="window.close()" style="padding: 8px 18px; background:#e2e8f0; color:#333; border:none; border-radius:4px; font-weight:bold; cursor: pointer; margin-left: 10px;">Tutup</button>
+    <!-- No-Print Action Buttons -->
+    <div class="no-print-bar">
+        <button class="btn-print-action btn-print-primary" onclick="window.print()">
+            Cetak Dokumen
+        </button>
+        <button class="btn-print-action btn-print-secondary" onclick="window.close()">
+            Tutup Halaman
+        </button>
     </div>
 
 </body>

@@ -527,31 +527,42 @@
 
         <form action="{{ route('engineering.pengajuan_perangkat.store') }}" method="POST" style="padding: 20px;">
             @csrf
+            <input type="hidden" name="id" id="edit_id" value="">
             
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 20px;">
-                <div style="font-size: 13px; font-weight: 700; color: #2563eb; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-cog"></i> Tipe Pengajuan
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <div style="font-size: 13px; font-weight: 700; color: #2563eb; display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-cog"></i> Tipe Pengajuan:
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: #0f172a;">
-                    <input type="hidden" name="tipe_pengajuan" value="pembelian">
-                    <i class="fas fa-desktop" style="color:#15803d"></i> Pengajuan Perangkat
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <select name="tipe_pengajuan" id="tipe_pengajuan_select" onchange="updateTipePengajuan(this.value)" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 13px; background: #fff;">
+                        <option value="repair">Repair Perangkat</option>
+                        <option value="pembelian">Pengajuan Perangkat (Pembelian)</option>
+                    </select>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px;">
                 <div>
                     <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Tempat, Tanggal</label>
                     <div style="display: flex; gap: 8px;">
-                        <input type="text" name="tempat" value="Mataram" style="width: 40%;" required>
-                        <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" style="width: 60%;" required>
+                        <input type="text" name="tempat" id="form_tempat" value="Mataram" style="width: 40%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;" required>
+                        <input type="date" name="tanggal" id="form_tanggal" value="{{ date('Y-m-d') }}" style="width: 60%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;" required>
                     </div>
                 </div>
                 <div>
                     <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Divisi / Bagian</label>
-                    <input type="text" name="divisi" value="Manage Service AI BAKTI" required>
+                    <input type="text" name="divisi" id="form_divisi" value="Manage Service AI BAKTI" style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;" required>
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">No. Surat</label>
+                    <input type="text" name="no_pengajuan" id="form_no_pengajuan" value="-" style="width: 100%; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
                 </div>
             </div>
 
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Keterangan Pengajuan Perangkat</label>
+                <textarea name="keterangan_pengajuan" id="form_keterangan_pengajuan" rows="2" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12.5px; outline: none; font-family: inherit;">Dengan ini saya mengajukan perangkat sparepart untuk pergantian perangkat yang rusak dengan perincian sebagai berikut :</textarea>
+            </div>
 
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
 
@@ -576,28 +587,35 @@
                     </div>
                 </div>
 
-                <div>
+                <div style="margin-bottom: 10px;">
                     <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Terbilang</label>
                     <input type="text" id="terbilangInput" name="terbilang" readonly style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #334155; width: 100%; font-weight: 500;" value="Nol Rupiah">
+                </div>
+
+                <div>
+                    <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Catatan Tambahan</label>
+                    <input type="text" id="catatanInput" name="catatan" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #334155; width: 100%; font-weight: 500;" value="-">
                 </div>
             </div>
 
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
 
             <div style="margin-bottom: 20px;">
-                <h4 style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 12px;">Tertanda</h4>
+                <h4 style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 12px;">Tertanda (Tanda Tangan & Approval)</h4>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
                     <div>
                         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Pemohon</label>
-                        <select name="pemohon_nama" style="margin-bottom: 6px; width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
+                        <select name="pemohon_nama" id="form_pemohon_nama" style="margin-bottom: 6px; width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
+                            <option value="Lalu Taufik Wijaya">Lalu Taufik Wijaya</option>
                             <option value="Misdan">Misdan</option>
-                            <option value="Lalu Taufik">Lalu Taufik</option>
+                            <option value="Rossie Maulana Septian, S.Kom">Rossie Maulana Septian, S.Kom</option>
                         </select>
-                        <select name="pemohon_jabatan" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
-                            <option value="Leader Engineer">Leader Engineer</option>
-                            <option value="Leader VSAT">Leader VSAT</option>
+                        <select name="pemohon_jabatan" id="form_pemohon_jabatan" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
+                            <option value="Engineering Leader">Engineering Leader</option>
                             <option value="Leader Rumah Tangga">Leader Rumah Tangga</option>
+                            <option value="NOC Leader">NOC Leader</option>
+                            <option value="Leader VSAT">Leader VSAT</option>
                         </select>
                     </div>
                     <div>
@@ -707,12 +725,20 @@ let itemIndex = 0;
 
 function openModal(id) { 
     document.getElementById(id).classList.add('open'); 
-    if (id === 'addModal' && document.getElementById('deviceItemsWrapper').children.length === 0) {
-        addDeviceRow('ROUTER', 1, 50000, 'STOK', '-');
+    if (id === 'addModal' && !document.getElementById('edit_id').value) {
+        document.getElementById('modalHeaderTitle').innerText = 'Pengajuan Perangkat';
+        if (document.getElementById('deviceItemsWrapper').children.length === 0) {
+            addDeviceRow('MODEM HT2010', 1, 0, 'MITRA/KANTOR', 'STOK', '-');
+        }
     }
 }
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) { 
+    document.getElementById(id).classList.remove('open'); 
+    if (id === 'addModal') {
+        document.getElementById('edit_id').value = '';
+    }
+}
 
 function updateTipePengajuan(val) {
     const headerTitle = document.getElementById('modalHeaderTitle');
@@ -726,7 +752,7 @@ function updateTipePengajuan(val) {
     }
 }
 
-function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, peruntukan = 'STOK', keterangan = '-') {
+function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, layanan = 'MITRA/KANTOR', peruntukan = 'STOK', keterangan = '-') {
     const wrapper = document.getElementById('deviceItemsWrapper');
     const idx = itemIndex++;
 
@@ -735,27 +761,27 @@ function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, peruntukan = 'ST
     rowDiv.style.cssText = 'border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #ffffff;';
     
     rowDiv.innerHTML = `
-        <div style="display: grid; grid-template-columns: 2fr 1fr 1.5fr 1.5fr auto; gap: 10px; align-items: start; margin-bottom: 10px;">
+        <div style="display: grid; grid-template-columns: 2fr 0.8fr 1.3fr 1.3fr auto; gap: 10px; align-items: start; margin-bottom: 10px;">
             <div>
                 <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Perangkat</label>
-                <input type="text" name="items[${idx}][perangkat]" value="${perangkat}" placeholder="Contoh: ROUTER" required>
+                <input type="text" name="items[${idx}][perangkat]" value="${perangkat}" placeholder="Contoh: MODEM HT2010" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12.5px;" required>
             </div>
             <div>
                 <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Qty</label>
-                <input type="number" name="items[${idx}][qty]" value="${qty}" min="1" oninput="recalculateRow(${idx})" required>
+                <input type="number" name="items[${idx}][qty]" value="${qty}" min="1" oninput="recalculateRow(${idx})" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12.5px;" required>
             </div>
             <div>
                 <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Harga Satuan</label>
                 <div style="display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #fff;">
                     <span style="background: #f1f5f9; padding: 6px 8px; font-size: 12px; font-weight: 600; color: #475569; border-right: 1px solid #cbd5e1;">Rp</span>
-                    <input type="number" name="items[${idx}][harga_satuan]" id="harga_${idx}" value="${hargaSatuan}" min="0" oninput="recalculateRow(${idx})" style="border: none; border-radius: 0;" required>
+                    <input type="number" name="items[${idx}][harga_satuan]" id="harga_${idx}" value="${hargaSatuan}" min="0" oninput="recalculateRow(${idx})" style="border: none; width:100%; padding:6px; font-size:12.5px;" required>
                 </div>
             </div>
             <div>
                 <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Total</label>
                 <div style="display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #f8fafc;">
                     <span style="background: #f1f5f9; padding: 6px 8px; font-size: 12px; font-weight: 600; color: #475569; border-right: 1px solid #cbd5e1;">Rp</span>
-                    <input type="text" id="total_display_${idx}" readonly value="${(qty * hargaSatuan).toLocaleString('id-ID')}" style="border: none; border-radius: 0; background: transparent; font-weight: 600;">
+                    <input type="text" id="total_display_${idx}" readonly value="${(qty * hargaSatuan).toLocaleString('id-ID')}" style="border: none; width:100%; padding:6px; background: transparent; font-weight: 600; font-size:12.5px;">
                     <input type="hidden" name="items[${idx}][total]" id="total_${idx}" value="${qty * hargaSatuan}">
                 </div>
             </div>
@@ -766,14 +792,18 @@ function addDeviceRow(perangkat = '', qty = 1, hargaSatuan = 0, peruntukan = 'ST
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 10px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 10px;">
             <div>
-                <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Peruntukan</label>
-                <input type="text" name="items[${idx}][peruntukan]" value="${peruntukan}" placeholder="STOK">
+                <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Mitra / Kantor</label>
+                <input type="text" name="items[${idx}][layanan]" value="${layanan}" placeholder="Contoh: POLDA NTB, BNN NTB" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12.5px;">
             </div>
             <div>
-                <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Keterangan</label>
-                <input type="text" name="items[${idx}][keterangan]" value="${keterangan}" placeholder="-">
+                <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Peruntukan</label>
+                <input type="text" name="items[${idx}][peruntukan]" value="${peruntukan}" placeholder="STOK" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12.5px;">
+            </div>
+            <div>
+                <label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Keterangan Item</label>
+                <input type="text" name="items[${idx}][keterangan]" value="${keterangan}" placeholder="-" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12.5px;">
             </div>
         </div>
     `;
@@ -871,38 +901,60 @@ function viewDetailModal(item) {
                     <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${it.qty || 1}</td>
                     <td style="padding:6px; border:1px solid #cbd5e1; text-align:right;">Rp ${Number(it.harga_satuan || 0).toLocaleString('id-ID')}</td>
                     <td style="padding:6px; border:1px solid #cbd5e1; text-align:right;">Rp ${Number(it.total || 0).toLocaleString('id-ID')}</td>
+                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${it.layanan || 'MITRA/KANTOR'}</td>
+                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${it.peruntukan || 'STOK'}</td>
+                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${it.keterangan || '-'}</td>
                 </tr>
             `;
         });
     } else {
-        itemsHtml = `<tr><td colspan="5" style="text-align:center; padding:10px;">${item.nama_perangkat}</td></tr>`;
+        itemsHtml = `<tr><td colspan="8" style="text-align:center; padding:10px;">${item.nama_perangkat}</td></tr>`;
     }
 
     const html = `
         <div style="font-size:13px; color:#334155;">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; background:#f8fafc; padding:10px; border-radius:6px;">
-                <div><strong>No. Pengajuan:</strong> ${details.no_pengajuan || '-'}</div>
-                <div><strong>Tanggal:</strong> ${details.tanggal || '-'}</div>
+                <div><strong>Tempat, Tanggal:</strong> ${details.tempat || 'Mataram'}, ${details.tanggal || '-'}</div>
                 <div><strong>Divisi:</strong> ${details.divisi || '-'}</div>
-                <div><strong>Tipe:</strong> ${details.tipe_pengajuan || 'Pembelian Baru'}</div>
+                <div><strong>No. Surat:</strong> ${details.no_pengajuan || '-'}</div>
+                <div><strong>Tipe Pengajuan:</strong> ${details.tipe_pengajuan || 'Repair Perangkat'}</div>
             </div>
 
-            <h5 style="margin:10px 0 6px 0; font-weight:700;">Daftar Perangkat:</h5>
-            <table style="width:100%; border-collapse:collapse; margin-bottom:12px; font-size:12px;">
-                <thead>
-                    <tr style="background:#f1f5f9;">
-                        <th style="padding:6px; border:1px solid #cbd5e1;">No</th>
-                        <th style="padding:6px; border:1px solid #cbd5e1;">Perangkat</th>
-                        <th style="padding:6px; border:1px solid #cbd5e1;">Qty</th>
-                        <th style="padding:6px; border:1px solid #cbd5e1;">Harga</th>
-                        <th style="padding:6px; border:1px solid #cbd5e1;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>${itemsHtml}</tbody>
-            </table>
+            <div style="margin-bottom:12px; background:#fff; padding:10px; border:1px solid #e2e8f0; border-radius:6px; font-size:12px;">
+                <strong>Keterangan Pengajuan:</strong><br>
+                ${details.keterangan_pengajuan || 'Dengan ini saya mengajukan perangkat sparepart untuk pergantian perangkat yang rusak dengan perincian sebagai berikut :'}
+            </div>
 
-            <div style="text-align:right; font-weight:700; font-size:14px; color:#10b981;">
-                Grand Total: Rp ${Number(details.grand_total || 0).toLocaleString('id-ID')}
+            <h5 style="margin:10px 0 6px 0; font-weight:700;">Perincian Perangkat:</h5>
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; margin-bottom:12px; font-size:11px;">
+                    <thead>
+                        <tr style="background:#f1f5f9;">
+                            <th style="padding:6px; border:1px solid #cbd5e1;">No</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Perangkat</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Qty</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Harga</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Total</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Mitra / Kantor</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Peruntukan</th>
+                            <th style="padding:6px; border:1px solid #cbd5e1;">Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>${itemsHtml}</tbody>
+                </table>
+            </div>
+
+            <div style="background:#f8fafc; padding:10px; border-radius:6px; margin-top:8px;">
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13.5px; color:#10b981;">
+                    <span>Grand Total:</span>
+                    <span>Rp ${Number(details.grand_total || 0).toLocaleString('id-ID')}</span>
+                </div>
+                <div style="font-size:11.5px; color:#64748b; margin-top:4px;">
+                    <strong>Terbilang:</strong> <em>${details.terbilang || '-'}</em>
+                </div>
+                <div style="font-size:11.5px; color:#64748b; margin-top:2px;">
+                    <strong>Catatan:</strong> ${details.catatan || '-'}
+                </div>
             </div>
         </div>
     `;
@@ -913,18 +965,43 @@ function viewDetailModal(item) {
 }
 
 function openEditModal(item) {
-    openModal('addModal');
+    document.getElementById('edit_id').value = item.id;
     const details = item.details || {};
+    
+    if (details.tipe_pengajuan) {
+        document.getElementById('tipe_pengajuan_select').value = details.tipe_pengajuan;
+        updateTipePengajuan(details.tipe_pengajuan);
+    }
+    if (details.tempat) document.getElementById('form_tempat').value = details.tempat;
+    if (details.tanggal) document.getElementById('form_tanggal').value = details.tanggal;
+    if (details.divisi) document.getElementById('form_divisi').value = details.divisi;
+    if (details.no_pengajuan) document.getElementById('form_no_pengajuan').value = details.no_pengajuan;
+    if (details.keterangan_pengajuan) document.getElementById('form_keterangan_pengajuan').value = details.keterangan_pengajuan;
+    if (details.catatan) document.getElementById('catatanInput').value = details.catatan;
+
+    const wrapper = document.getElementById('deviceItemsWrapper');
+    wrapper.innerHTML = '';
+    const items = details.items || [];
+    if (items.length > 0) {
+        items.forEach(it => {
+            addDeviceRow(it.perangkat || '', it.qty || 1, it.harga_satuan || 0, it.layanan || 'MITRA/KANTOR', it.peruntukan || 'STOK', it.keterangan || '-');
+        });
+    } else {
+        addDeviceRow(item.nama_perangkat || '', 1, 0, 'MITRA/KANTOR', 'STOK', '-');
+    }
+
     if (details.tertanda) {
         if (details.tertanda.pemohon_nama) {
-            const el = document.querySelector('select[name="pemohon_nama"]');
+            const el = document.getElementById('form_pemohon_nama') || document.querySelector('[name="pemohon_nama"]');
             if (el) el.value = details.tertanda.pemohon_nama;
         }
         if (details.tertanda.pemohon_jabatan) {
-            const el = document.querySelector('select[name="pemohon_jabatan"]');
+            const el = document.getElementById('form_pemohon_jabatan') || document.querySelector('[name="pemohon_jabatan"]');
             if (el) el.value = details.tertanda.pemohon_jabatan;
         }
     }
+
+    openModal('addModal');
 }
 
 function openRejectModal(item) {
