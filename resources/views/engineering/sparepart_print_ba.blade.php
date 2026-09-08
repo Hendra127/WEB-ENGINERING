@@ -236,12 +236,27 @@
         </tr>
     </table>
 
+    @php
+        $getPhotos = function($field) {
+            if (empty($field)) return [];
+            if (is_array($field)) return $field;
+            $decoded = json_decode($field, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) return $decoded;
+            return [$field];
+        };
+        $listMasuk = $getPhotos($item->foto_masuk);
+        $listProses = $getPhotos($item->foto_proses);
+        $listKeluar = $getPhotos($item->foto_keluar);
+    @endphp
+
     <div class="section-title">Dokumentasi Kegiatan (Evidence)</div>
     <div class="photos-grid">
         <!-- Foto Masuk -->
         <div class="photo-card">
-            @if($item->foto_masuk)
-                <img src="{{ asset('storage/' . $item->foto_masuk) }}" alt="Foto Masuk">
+            @if(count($listMasuk) > 0)
+                @foreach($listMasuk as $img)
+                    <img src="{{ asset('storage/' . $img) }}" alt="Foto Masuk" style="margin-bottom: 4px;">
+                @endforeach
             @else
                 <div class="no-photo">Belum ada foto</div>
             @endif
@@ -250,8 +265,10 @@
 
         <!-- Foto Proses -->
         <div class="photo-card">
-            @if($item->foto_proses)
-                <img src="{{ asset('storage/' . $item->foto_proses) }}" alt="Foto Proses">
+            @if(count($listProses) > 0)
+                @foreach($listProses as $img)
+                    <img src="{{ asset('storage/' . $img) }}" alt="Foto Proses" style="margin-bottom: 4px;">
+                @endforeach
             @else
                 <div class="no-photo">Belum ada foto</div>
             @endif
@@ -260,8 +277,10 @@
 
         <!-- Foto Keluar -->
         <div class="photo-card">
-            @if($item->foto_keluar)
-                <img src="{{ asset('storage/' . $item->foto_keluar) }}" alt="Foto Keluar">
+            @if(count($listKeluar) > 0)
+                @foreach($listKeluar as $img)
+                    <img src="{{ asset('storage/' . $img) }}" alt="Foto Keluar" style="margin-bottom: 4px;">
+                @endforeach
             @else
                 <div class="no-photo">Belum ada foto</div>
             @endif

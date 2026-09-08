@@ -89,26 +89,32 @@ class SparepartController extends Controller
             'lokasi_pekerjaan'=>'required',
             'jenis_pekerjaan'=>'required',
             'qty'=>'required|integer|min:1',
-            'foto_masuk' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'foto_proses' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'foto_keluar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'file_ba' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx|max:10240',
+            'foto_masuk.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'foto_proses.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'foto_keluar.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'file_ba.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx|max:10240',
         ]);
         
         $data = $req->only(['lokasi_pekerjaan','ruang','jenis_pekerjaan','type','qty','satuan','teknisi','tgl_masuk','tgl_selesai','kerusakan','action','keterangan','status','pergantian_perangkat','keterangan_tambahan','harga','pengantaran_perangkat']);
-        $data['total_biaya'] = ($req->qty ?? 0) * ($req->harga ?? 0);
+        $data['harga'] = ($req->filled('harga') && (float)$req->harga > 0) ? (float)$req->harga : null;
+        $data['total_biaya'] = ($req->qty ?? 0) * ($data['harga'] ?? 0);
         
-        if ($req->hasFile('foto_masuk')) {
-            $data['foto_masuk'] = $req->file('foto_masuk')->store('spareparts', 'public');
-        }
-        if ($req->hasFile('foto_proses')) {
-            $data['foto_proses'] = $req->file('foto_proses')->store('spareparts', 'public');
-        }
-        if ($req->hasFile('foto_keluar')) {
-            $data['foto_keluar'] = $req->file('foto_keluar')->store('spareparts', 'public');
-        }
-        if ($req->hasFile('file_ba')) {
-            $data['file_ba'] = $req->file('file_ba')->store('spareparts', 'public');
+        foreach (['foto_masuk', 'foto_proses', 'foto_keluar', 'file_ba'] as $field) {
+            if ($req->hasFile($field)) {
+                $files = $req->file($field);
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+                $paths = [];
+                foreach ($files as $f) {
+                    if ($f->isValid()) {
+                        $paths[] = $f->store('spareparts', 'public');
+                    }
+                }
+                if (!empty($paths)) {
+                    $data[$field] = json_encode($paths);
+                }
+            }
         }
 
         SparepartNeeded::create($data);
@@ -121,38 +127,47 @@ class SparepartController extends Controller
             'lokasi_pekerjaan'=>'required',
             'jenis_pekerjaan'=>'required',
             'qty'=>'required|integer|min:1',
-            'foto_masuk' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'foto_proses' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'foto_keluar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'file_ba' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx|max:10240',
+            'foto_masuk.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'foto_proses.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'foto_keluar.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'file_ba.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf,doc,docx|max:10240',
         ]);
 
         $data = $req->only(['lokasi_pekerjaan','ruang','jenis_pekerjaan','type','qty','satuan','teknisi','tgl_masuk','tgl_selesai','kerusakan','action','keterangan','status','pergantian_perangkat','keterangan_tambahan','harga','pengantaran_perangkat']);
-        $data['total_biaya'] = ($req->qty ?? 0) * ($req->harga ?? 0);
+        $data['harga'] = ($req->filled('harga') && (float)$req->harga > 0) ? (float)$req->harga : null;
+        $data['total_biaya'] = ($req->qty ?? 0) * ($data['harga'] ?? 0);
         
-        if ($req->hasFile('foto_masuk')) {
-            if ($item->foto_masuk) {
-                Storage::disk('public')->delete($item->foto_masuk);
+        foreach (['foto_masuk', 'foto_proses', 'foto_keluar', 'file_ba'] as $field) {
+            $existingPaths = $req->input('existing_' . $field, []);
+            if (!is_array($existingPaths)) {
+                $existingPaths = [];
             }
-            $data['foto_masuk'] = $req->file('foto_masuk')->store('spareparts', 'public');
-        }
-        if ($req->hasFile('foto_proses')) {
-            if ($item->foto_proses) {
-                Storage::disk('public')->delete($item->foto_proses);
+
+            // Remove deleted files from disk
+            $currentStored = $item->$field;
+            if ($currentStored) {
+                $oldList = is_array(json_decode($currentStored, true)) ? json_decode($currentStored, true) : [$currentStored];
+                foreach ($oldList as $oldFile) {
+                    if (!in_array($oldFile, $existingPaths)) {
+                        Storage::disk('public')->delete($oldFile);
+                    }
+                }
             }
-            $data['foto_proses'] = $req->file('foto_proses')->store('spareparts', 'public');
-        }
-        if ($req->hasFile('foto_keluar')) {
-            if ($item->foto_keluar) {
-                Storage::disk('public')->delete($item->foto_keluar);
+
+            // Upload new files
+            if ($req->hasFile($field)) {
+                $files = $req->file($field);
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+                foreach ($files as $f) {
+                    if ($f->isValid()) {
+                        $existingPaths[] = $f->store('spareparts', 'public');
+                    }
+                }
             }
-            $data['foto_keluar'] = $req->file('foto_keluar')->store('spareparts', 'public');
-        }
-        if ($req->hasFile('file_ba')) {
-            if ($item->file_ba) {
-                Storage::disk('public')->delete($item->file_ba);
-            }
-            $data['file_ba'] = $req->file('file_ba')->store('spareparts', 'public');
+
+            $data[$field] = !empty($existingPaths) ? json_encode(array_values($existingPaths)) : null;
         }
 
         $item->update($data);
@@ -161,19 +176,14 @@ class SparepartController extends Controller
 
     public function destroy(SparepartNeeded $item)
     {
-        if ($item->foto_masuk) {
-            Storage::disk('public')->delete($item->foto_masuk);
+        foreach (['foto_masuk', 'foto_proses', 'foto_keluar', 'file_ba'] as $field) {
+            if ($item->$field) {
+                $oldPaths = is_array(json_decode($item->$field, true)) ? json_decode($item->$field, true) : [$item->$field];
+                foreach ($oldPaths as $op) {
+                    Storage::disk('public')->delete($op);
+                }
+            }
         }
-        if ($item->foto_proses) {
-            Storage::disk('public')->delete($item->foto_proses);
-        }
-        if ($item->foto_keluar) {
-            Storage::disk('public')->delete($item->foto_keluar);
-        }
-        if ($item->file_ba) {
-            Storage::disk('public')->delete($item->file_ba);
-        }
-
         $item->delete();
         return back()->with('success','Data sparepart berhasil dihapus!');
     }

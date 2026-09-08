@@ -135,9 +135,8 @@
               <td style="min-width:280px;font-size:12px">{{ $row->action ?: '-' }}</td>
               <td style="min-width:280px;font-size:12px">{{ $row->pergantian_perangkat ?: '-' }}</td>
               <td style="min-width:200px;font-size:12px">{{ $row->keterangan_tambahan ?: '-' }}</td>
-              <td style="white-space:nowrap">Rp {{ number_format($row->harga, 0, ',', '.') }}</td>
-              <td style="white-space:nowrap;font-weight:700;color:var(--primary)">Rp
-                {{ number_format($row->total_biaya, 0, ',', '.') }}</td>
+              <td style="white-space:nowrap">{{ ($row->harga && $row->harga > 0) ? 'Rp ' . number_format($row->harga, 0, ',', '.') : '-' }}</td>
+              <td style="white-space:nowrap;font-weight:700;color:var(--primary)">{{ ($row->total_biaya && $row->total_biaya > 0) ? 'Rp ' . number_format($row->total_biaya, 0, ',', '.') : '-' }}</td>
               <td style="white-space:nowrap;text-align:center">
                 <span
                   class="badge badge-{{ $row->status === 'DONE' ? 'success' : ($row->status === 'PROSES' ? 'warning' : 'danger') }}">
@@ -253,7 +252,7 @@
               placeholder="Keterangan tambahan..."></div>
         </div>
         <div class="grid-2">
-          <div class="form-group"><label>Harga Barang</label><input type="number" name="harga" placeholder="0"></div>
+          <div class="form-group"><label>Harga Barang</label><input type="number" name="harga" placeholder="-"></div>
           <div class="form-group"><label>Pengantaran Perangkat</label><input type="text" name="pengantaran_perangkat"
               placeholder="Pengantaran..."></div>
         </div>
@@ -268,7 +267,7 @@
           <div class="form-group">
             <label>Foto Masuk (Check-in)</label>
             <div class="upload-dropzone" id="add_dz_masuk" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="foto_masuk" accept="image/*" style="display:none">
+              <input type="file" name="foto_masuk[]" multiple accept="image/*" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-sign-in-alt"></i></div>
                 <span class="upload-title">Foto Masuk (Check-in)</span>
@@ -281,7 +280,7 @@
           <div class="form-group">
             <label>Foto Proses</label>
             <div class="upload-dropzone" id="add_dz_proses" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="foto_proses" accept="image/*" style="display:none">
+              <input type="file" name="foto_proses[]" multiple accept="image/*" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-tools"></i></div>
                 <span class="upload-title">Foto Proses Perbaikan</span>
@@ -296,7 +295,7 @@
           <div class="form-group">
             <label>Foto Keluar (Check-out)</label>
             <div class="upload-dropzone" id="add_dz_keluar" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="foto_keluar" accept="image/*" style="display:none">
+              <input type="file" name="foto_keluar[]" multiple accept="image/*" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-sign-out-alt"></i></div>
                 <span class="upload-title">Foto Keluar (Check-out)</span>
@@ -309,7 +308,7 @@
           <div class="form-group">
             <label>File BA (Sudah TTD)</label>
             <div class="upload-dropzone" id="add_dz_ba" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="file_ba" accept="image/*,application/pdf,.doc,.docx" style="display:none">
+              <input type="file" name="file_ba[]" multiple accept="image/*,application/pdf,.doc,.docx" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-file-signature"></i></div>
                 <span class="upload-title">File / Foto BA Signed</span>
@@ -403,7 +402,7 @@
               id="e_keterangan_tambahan"></div>
         </div>
         <div class="grid-2">
-          <div class="form-group"><label>Harga Barang</label><input type="number" name="harga" id="e_harga"></div>
+          <div class="form-group"><label>Harga Barang</label><input type="number" name="harga" id="e_harga" placeholder="-"></div>
           <div class="form-group"><label>Pengantaran Perangkat</label><input type="text" name="pengantaran_perangkat"
               id="e_pengantaran"></div>
         </div>
@@ -418,7 +417,7 @@
           <div class="form-group">
             <label>Foto Masuk (Check-in)</label>
             <div class="upload-dropzone" id="edit_dz_masuk" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="foto_masuk" accept="image/*" style="display:none">
+              <input type="file" name="foto_masuk[]" multiple accept="image/*" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-sign-in-alt"></i></div>
                 <span class="upload-title">Upload Foto Masuk Baru</span>
@@ -432,7 +431,7 @@
           <div class="form-group">
             <label>Foto Proses</label>
             <div class="upload-dropzone" id="edit_dz_proses" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="foto_proses" accept="image/*" style="display:none">
+              <input type="file" name="foto_proses[]" multiple accept="image/*" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-tools"></i></div>
                 <span class="upload-title">Upload Foto Proses Baru</span>
@@ -448,7 +447,7 @@
           <div class="form-group">
             <label>Foto Keluar (Check-out)</label>
             <div class="upload-dropzone" id="edit_dz_keluar" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="foto_keluar" accept="image/*" style="display:none">
+              <input type="file" name="foto_keluar[]" multiple accept="image/*" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-sign-out-alt"></i></div>
                 <span class="upload-title">Upload Foto Keluar Baru</span>
@@ -462,7 +461,7 @@
           <div class="form-group" id="ba_upload_container">
             <label>File BA (Sudah TTD / Overwrite)</label>
             <div class="upload-dropzone" id="edit_dz_ba" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 125px; padding: 16px 12px; border: 2px dashed var(--border); border-radius: var(--radius-sm); background: var(--surface2); cursor: pointer; text-align: center; position: relative; width: 100%; box-sizing: border-box;">
-              <input type="file" name="file_ba" accept="image/*,application/pdf,.doc,.docx" style="display:none">
+              <input type="file" name="file_ba[]" multiple accept="image/*,application/pdf,.doc,.docx" style="display:none">
               <div class="upload-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 100%; pointer-events: none;">
                 <div class="upload-icon-circle"><i class="fas fa-file-signature"></i></div>
                 <span class="upload-title">Upload File BA Signed Baru</span>
@@ -532,6 +531,23 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Review / Lightbox Foto -->
+  <div class="modal-overlay" id="imageReviewModal" style="z-index: 9999;">
+    <div class="modal" style="max-width: 900px; width: 95%; background: rgba(15, 23, 42, 0.98); border: 1px solid #334155; padding: 16px; border-radius: 12px; color: #fff;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 8px;">
+        <span id="reviewModalTitle" style="font-weight: 700; font-size: 14px; color: #38bdf8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80%;"><i class="fas fa-search-plus"></i> Review Foto</span>
+        <button type="button" onclick="closeModal('imageReviewModal')" style="background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="display: flex; justify-content: center; align-items: center; min-height: 350px; max-height: 72vh; overflow: auto; background: #020617; border-radius: 8px; padding: 10px;">
+        <img id="reviewModalImage" src="" alt="Review Foto" style="max-width: 100%; max-height: 68vh; object-fit: contain; border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px;">
+        <a id="reviewModalDownload" href="#" target="_blank" class="btn btn-sm btn-outline" style="color: #38bdf8; border-color: #0284c7; text-decoration: none;"><i class="fas fa-external-link-alt"></i> Buka Ukuran Penuh</a>
+        <button type="button" class="btn btn-primary" onclick="closeModal('imageReviewModal')">Tutup Review</button>
+      </div>
+    </div>
+  </div>
 @endsection
 @section('scripts')
   <script>
@@ -567,12 +583,9 @@
     });
 
     function toggleBAUpload() {
-      const statusVal = document.getElementById('e_status').value;
       const container = document.getElementById('ba_upload_container');
-      if (statusVal === 'DONE') {
+      if (container) {
         container.style.display = 'block';
-      } else {
-        container.style.display = 'none';
       }
     }
 
@@ -595,6 +608,23 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     }
 
+    function openReviewModal(src, title) {
+      document.getElementById('reviewModalImage').src = src;
+      document.getElementById('reviewModalTitle').innerHTML = '<i class="fas fa-search-plus"></i> ' + (title || 'Review Foto');
+      document.getElementById('reviewModalDownload').href = src;
+      openModal('imageReviewModal');
+    }
+
+    function parsePhotos(data) {
+      if (!data) return [];
+      if (Array.isArray(data)) return data;
+      try {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed)) return parsed;
+      } catch(e) {}
+      return [data];
+    }
+
     function setupDropzone(containerId) {
       const container = document.getElementById(containerId);
       if (!container) return;
@@ -605,10 +635,12 @@
 
       if (!fileInput) return;
 
+      let accumulatedFiles = [];
+
       container.setAttribute('tabindex', '0');
 
       container.addEventListener('click', (e) => {
-        if (e.target.closest('.remove-file-btn') || e.target.closest('a')) return;
+        if (e.target.closest('.remove-file-btn') || e.target.closest('.review-file-btn') || e.target.closest('a') || e.target.closest('button')) return;
         fileInput.click();
       });
 
@@ -638,7 +670,7 @@
         if (!dt) return;
 
         if (dt.files && dt.files.length > 0) {
-          applyFile(dt.files[0]);
+          addFiles(Array.from(dt.files));
         } else {
           const html = dt.getData('text/html');
           const match = html && html.match(/src=["'](.*?)["']/);
@@ -650,7 +682,7 @@
               const blob = await res.blob();
               const ext = (blob.type && blob.type.split('/')[1]) || 'png';
               const file = new File([blob], `wa_dropped_${Date.now()}.${ext}`, { type: blob.type || 'image/png' });
-              applyFile(file);
+              addFiles([file]);
             } catch (err) {
               console.error('Gagal mengambil gambar dari URL drag:', err);
             }
@@ -663,8 +695,8 @@
       });
 
       fileInput.addEventListener('change', () => {
-        if (fileInput.files && fileInput.files[0]) {
-          renderPreview(fileInput.files[0]);
+        if (fileInput.files && fileInput.files.length > 0) {
+          addFiles(Array.from(fileInput.files));
         }
       });
 
@@ -672,6 +704,7 @@
         const cData = e.clipboardData || window.clipboardData;
         if (!cData || !cData.items) return;
 
+        const pastedFiles = [];
         for (let i = 0; i < cData.items.length; i++) {
           const item = cData.items[i];
           if (item.type.indexOf('image') !== -1 || item.kind === 'file') {
@@ -680,69 +713,94 @@
               e.preventDefault();
               e.stopPropagation();
               const ext = (file.type && file.type.split('/')[1]) || 'png';
-              const namedFile = new File([file], `wa_paste_${Date.now()}.${ext}`, { type: file.type || 'image/png' });
-              applyFile(namedFile);
-              break;
+              const namedFile = new File([file], `wa_paste_${Date.now()}_${i}.${ext}`, { type: file.type || 'image/png' });
+              pastedFiles.push(namedFile);
             }
           }
         }
+        if (pastedFiles.length > 0) {
+          addFiles(pastedFiles);
+        }
       }
 
-      function applyFile(file) {
+      function addFiles(newFiles) {
+        accumulatedFiles = accumulatedFiles.concat(newFiles);
+        syncFileInput();
+        renderPreviews();
+      }
+
+      function removeFileByIndex(idx) {
+        accumulatedFiles.splice(idx, 1);
+        syncFileInput();
+        renderPreviews();
+      }
+
+      function syncFileInput() {
         const dt = new DataTransfer();
-        dt.items.add(file);
+        accumulatedFiles.forEach(f => dt.items.add(f));
         fileInput.files = dt.files;
-        renderPreview(file);
       }
 
-      function renderPreview(file) {
+      function renderPreviews() {
+        if (accumulatedFiles.length === 0) {
+          if (placeholder) placeholder.style.display = 'flex';
+          if (preview) {
+            preview.innerHTML = '';
+            preview.style.display = 'none';
+          }
+          return;
+        }
+
         if (placeholder) placeholder.style.display = 'none';
         if (!preview) return;
 
-        preview.style.display = 'flex';
-        const isImg = file.type.startsWith('image/');
+        preview.style.display = 'block';
+        preview.innerHTML = '';
 
-        if (isImg) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            preview.innerHTML = `
-              <div class="preview-thumb-wrap">
-                <img src="${e.target.result}" alt="Preview">
-                <button type="button" class="remove-file-btn" title="Hapus foto"><i class="fas fa-times"></i></button>
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 8px; width: 100%; margin-top: 6px;';
+
+        accumulatedFiles.forEach((file, idx) => {
+          const card = document.createElement('div');
+          card.style.cssText = 'border: 1px solid var(--border); border-radius: 6px; padding: 4px; background: var(--surface); position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden;';
+
+          const isImg = file.type.startsWith('image/');
+          if (isImg) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              card.innerHTML = `
+                <div style="width: 100%; height: 75px; border-radius: 4px; overflow: hidden; position: relative; background: #0f172a;">
+                  <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" title="Klik untuk Review" onclick="event.stopPropagation(); openReviewModal('${e.target.result}', '${escapeHtml(file.name)}')">
+                  <button type="button" class="review-file-btn" onclick="event.stopPropagation(); openReviewModal('${e.target.result}', '${escapeHtml(file.name)}')" title="Review Foto" style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.65); color: #fff; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-eye"></i></button>
+                  <button type="button" class="remove-file-btn" onclick="event.stopPropagation(); window.removeDzFile('${containerId}', ${idx})" title="Hapus foto" style="position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-trash-alt"></i></button>
+                </div>
+                <span style="font-size: 9.5px; margin-top: 4px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
+              `;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            card.innerHTML = `
+              <div style="width: 100%; height: 75px; border-radius: 4px; background: var(--surface2); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                <i class="fas fa-file-pdf" style="font-size: 24px; color: var(--primary);"></i>
+                <button type="button" class="remove-file-btn" onclick="event.stopPropagation(); window.removeDzFile('${containerId}', ${idx})" title="Hapus file" style="position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: #fff; border: none; border-radius: 4px; width: 22px; height: 22px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-trash-alt"></i></button>
               </div>
-              <div class="preview-file-info">
-                <span class="preview-filename">${escapeHtml(file.name)}</span> (${formatBytes(file.size)})
-              </div>
+              <span style="font-size: 9.5px; margin-top: 4px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
             `;
-            bindRemove();
-          };
-          reader.readAsDataURL(file);
-        } else {
-          preview.innerHTML = `
-            <div class="preview-thumb-wrap" style="background:var(--surface); flex-direction:column; gap:4px; border-style:dashed;">
-              <i class="fas fa-file-pdf" style="font-size:28px; color:var(--primary);"></i>
-              <button type="button" class="remove-file-btn" title="Hapus file"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="preview-file-info">
-              <span class="preview-filename">${escapeHtml(file.name)}</span> (${formatBytes(file.size)})
-            </div>
-          `;
-          bindRemove();
-        }
-      }
+          }
+          grid.appendChild(card);
+        });
 
-      function bindRemove() {
-        const btn = preview.querySelector('.remove-file-btn');
-        if (btn) {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            resetDropzone();
-          });
-        }
+        const addMoreBtn = document.createElement('div');
+        addMoreBtn.style.cssText = 'margin-top: 8px; width: 100%; text-align: center;';
+        addMoreBtn.innerHTML = `<button type="button" class="btn btn-sm btn-outline" style="font-size: 11px; padding: 3px 10px;" onclick="event.stopPropagation(); document.querySelector('#${containerId} input[type=file]').click();"><i class="fas fa-plus"></i> Tambah Foto Lagi</button>`;
+
+        preview.appendChild(grid);
+        preview.appendChild(addMoreBtn);
       }
 
       function resetDropzone() {
-        fileInput.value = '';
+        accumulatedFiles = [];
+        syncFileInput();
         if (preview) {
           preview.innerHTML = '';
           preview.style.display = 'none';
@@ -753,7 +811,15 @@
       }
 
       container.resetDropzone = resetDropzone;
+      container.removeFileByIndex = removeFileByIndex;
     }
+
+    window.removeDzFile = function(containerId, idx) {
+      const container = document.getElementById(containerId);
+      if (container && container.removeFileByIndex) {
+        container.removeFileByIndex(idx);
+      }
+    };
 
     function openAddModal() {
       ['add_dz_masuk', 'add_dz_proses', 'add_dz_keluar', 'add_dz_ba'].forEach(id => {
@@ -771,6 +837,51 @@
       dropzoneIds.forEach(id => setupDropzone(id));
     });
 
+    function renderSavedGallery(containerId, photos, fieldTitle, fieldKey) {
+      const target = document.getElementById(containerId);
+      if (!target) return;
+      const list = parsePhotos(photos);
+      if (list.length > 0) {
+        let html = `<div style="margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--primary);"><i class="fas fa-images"></i> ${fieldTitle} Tersimpan (${list.length}):</div>`;
+        html += `<div class="saved-gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 6px; margin-top: 4px;">`;
+        list.forEach(p => {
+          const url = '{{ asset("storage") }}/' + p;
+          const isPdf = p.toLowerCase().endsWith('.pdf') || p.toLowerCase().endsWith('.doc') || p.toLowerCase().endsWith('.docx');
+          if (isPdf) {
+            html += `
+              <div class="saved-photo-card" style="height: 65px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface2); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                <input type="hidden" name="existing_${fieldKey}[]" value="${escapeHtml(p)}">
+                <i class="fas fa-file-pdf" style="font-size: 22px; color: var(--primary);"></i>
+                <a href="${url}" target="_blank" style="font-size: 9px; margin-top: 2px; color: var(--primary); font-weight: 600; text-decoration: none;">Buka File</a>
+                <button type="button" onclick="removeSavedPhotoCard(this)" title="Hapus file tersimpan" style="position: absolute; top: 3px; right: 3px; background: rgba(239,68,68,0.9); color: #fff; border: none; border-radius: 3px; width: 20px; height: 20px; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-trash-alt"></i></button>
+              </div>`;
+          } else {
+            html += `
+              <div class="saved-photo-card" style="height: 65px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; position: relative; background: #0f172a;">
+                <input type="hidden" name="existing_${fieldKey}[]" value="${escapeHtml(p)}">
+                <img src="${url}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" title="Review Foto" onclick="openReviewModal('${url}', '${fieldTitle}')">
+                <button type="button" onclick="openReviewModal('${url}', '${fieldTitle}')" title="Review Foto" style="position: absolute; bottom: 3px; left: 3px; background: rgba(0,0,0,0.65); color: #fff; border: none; border-radius: 3px; width: 20px; height: 20px; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-eye"></i></button>
+                <button type="button" onclick="removeSavedPhotoCard(this)" title="Hapus foto tersimpan" style="position: absolute; top: 3px; right: 3px; background: rgba(239,68,68,0.9); color: #fff; border: none; border-radius: 3px; width: 20px; height: 20px; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-trash-alt"></i></button>
+              </div>`;
+          }
+        });
+        html += `</div>`;
+        target.innerHTML = html;
+      } else {
+        target.innerHTML = `<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada file tersimpan</div>`;
+      }
+    }
+
+    function removeSavedPhotoCard(btn) {
+      const card = btn.closest('.saved-photo-card');
+      const grid = card ? card.parentElement : null;
+      const target = grid ? grid.parentElement : null;
+      if (card) card.remove();
+      if (grid && grid.querySelectorAll('.saved-photo-card').length === 0 && target) {
+        target.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada file tersimpan</div>';
+      }
+    }
+
     function editSparepart(row) {
       ['edit_dz_masuk', 'edit_dz_proses', 'edit_dz_keluar', 'edit_dz_ba'].forEach(id => {
         const el = document.getElementById(id);
@@ -785,7 +896,6 @@
       document.getElementById('e_qty').value = row.qty || 1;
       document.getElementById('e_satuan').value = row.satuan || 'Unit';
 
-      // Handle Multi-select for Edit
       const checks = document.querySelectorAll('.edit-teknisi-check');
       checks.forEach(c => c.checked = false);
       if (Array.isArray(row.teknisi)) {
@@ -805,62 +915,55 @@
       document.getElementById('e_kerusakan').value = row.kerusakan || '';
       document.getElementById('e_action').value = row.action || '';
       document.getElementById('e_pergantian').value = row.pergantian_perangkat || '';
-      document.getElementById('e_harga').value = row.harga || '';
+      document.getElementById('e_harga').value = (row.harga && parseFloat(row.harga) > 0) ? row.harga : '';
       document.getElementById('e_keterangan').value = row.keterangan || '';
       document.getElementById('e_keterangan_tambahan').value = row.keterangan_tambahan || '';
 
-      // Previews of photos & BA in Edit form
-      const baseStorage = '{{ asset("storage") }}/';
-
-      const previewMasuk = document.getElementById('e_preview_masuk');
-      if (row.foto_masuk) {
-        previewMasuk.innerHTML = `
-          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
-            <span style="color: var(--primary); font-weight: 600;"><i class="fas fa-image"></i> Foto Masuk Tersimpan</span>
-            <a href="${baseStorage + row.foto_masuk}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto;"><i class="fas fa-external-link-alt"></i> Lihat</a>
-          </div>`;
-      } else {
-        previewMasuk.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada foto tersimpan</div>';
-      }
-
-      const previewProses = document.getElementById('e_preview_proses');
-      if (row.foto_proses) {
-        previewProses.innerHTML = `
-          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
-            <span style="color: var(--primary); font-weight: 600;"><i class="fas fa-image"></i> Foto Proses Tersimpan</span>
-            <a href="${baseStorage + row.foto_proses}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto;"><i class="fas fa-external-link-alt"></i> Lihat</a>
-          </div>`;
-      } else {
-        previewProses.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada foto tersimpan</div>';
-      }
-
-      const previewKeluar = document.getElementById('e_preview_keluar');
-      if (row.foto_keluar) {
-        previewKeluar.innerHTML = `
-          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
-            <span style="color: var(--primary); font-weight: 600;"><i class="fas fa-image"></i> Foto Keluar Tersimpan</span>
-            <a href="${baseStorage + row.foto_keluar}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto;"><i class="fas fa-external-link-alt"></i> Lihat</a>
-          </div>`;
-      } else {
-        previewKeluar.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada foto tersimpan</div>';
-      }
-
-      const previewBA = document.getElementById('e_preview_ba');
-      if (row.file_ba) {
-        previewBA.innerHTML = `
-          <div style="margin-top: 6px; padding: 6px 10px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;">
-            <span style="color: var(--success); font-weight: 600;"><i class="fas fa-file-contract"></i> BA Signed Tersimpan</span>
-            <a href="${baseStorage + row.file_ba}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 10px; height: auto; border-color: var(--success); color: var(--success);"><i class="fas fa-external-link-alt"></i> Lihat</a>
-          </div>`;
-      } else {
-        previewBA.innerHTML = '<div style="margin-top: 4px; font-size: 11px; color: var(--text2);"><i class="fas fa-info-circle"></i> Belum ada BA yang diupload</div>';
-      }
+      renderSavedGallery('e_preview_masuk', row.foto_masuk, 'Foto Masuk', 'foto_masuk');
+      renderSavedGallery('e_preview_proses', row.foto_proses, 'Foto Proses', 'foto_proses');
+      renderSavedGallery('e_preview_keluar', row.foto_keluar, 'Foto Keluar', 'foto_keluar');
+      renderSavedGallery('e_preview_ba', row.file_ba, 'File BA', 'file_ba');
 
       toggleBAUpload();
       openModal('editModal');
     }
 
+    function renderEvidenceCol(photos, label) {
+      const list = parsePhotos(photos);
+      if (list.length === 0) {
+        return `
+          <div style="text-align: center; font-size: 11px;">
+            <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--text2);">Tidak ada</div>
+            <span style="font-weight: 600; display: block; margin-top: 4px;">${label}</span>
+          </div>`;
+      }
+      let html = `
+        <div style="text-align: center; font-size: 11px;">
+          <div style="display: flex; gap: 4px; overflow-x: auto; padding: 2px;">`;
+      list.forEach(p => {
+        const url = '/storage/' + p;
+        html += `
+          <div style="width: 80px; height: 80px; flex-shrink: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: #0f172a; position: relative;">
+            <img src="${url}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" title="Klik untuk Review" onclick="openReviewModal('${url}', '${label}')">
+            <button type="button" onclick="openReviewModal('${url}', '${label}')" style="position: absolute; bottom: 3px; right: 3px; background: rgba(0,0,0,0.65); color: #fff; border: none; border-radius: 3px; width: 20px; height: 20px; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-eye"></i></button>
+          </div>`;
+      });
+      html += `
+          </div>
+          <span style="font-weight: 600; display: block; margin-top: 4px;">${label} (${list.length})</span>
+        </div>`;
+      return html;
+    }
+
     function viewSparepart(row) {
+      const baFiles = parsePhotos(row.file_ba);
+      let baButtons = `<a href="/engineering/sparepart/${row.id}/print-ba" target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none;"><i class="fas fa-file-pdf"></i> Cetak BA Otomatis</a>`;
+      if (baFiles.length > 0) {
+        baFiles.forEach((bf, idx) => {
+          baButtons += `<a href="/storage/${bf}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration: none; border-color: var(--success); color: var(--success);"><i class="fas fa-file-signature"></i> Lihat BA Signed ${baFiles.length > 1 ? (idx + 1) : ''}</a>`;
+        });
+      }
+
       const content = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;padding:10px;background:var(--surface2);border-radius:var(--radius-sm)">
         <div><strong>Lokasi:</strong><br>${row.lokasi_pekerjaan}</div>
@@ -872,8 +975,8 @@
         <div><strong>Status:</strong><br><span class="badge badge-${row.status === 'DONE' ? 'success' : (row.status === 'PROSES' ? 'warning' : 'danger')}">${row.status}</span></div>
         <div><strong>Tgl Mulai:</strong><br>${row.tgl_masuk ? new Date(row.tgl_masuk).toLocaleDateString('id-ID') : '-'}</div>
         <div><strong>Tgl Selesai:</strong><br>${row.tgl_selesai ? new Date(row.tgl_selesai).toLocaleDateString('id-ID') : '-'}</div>
-        <div><strong>Harga:</strong><br>Rp ${new Intl.NumberFormat('id-ID').format(row.harga || 0)}</div>
-        <div style="grid-column: span 2"><strong>Total Biaya:</strong><br>Rp ${new Intl.NumberFormat('id-ID').format(row.total_biaya || 0)}</div>
+        <div><strong>Harga:</strong><br>${(row.harga && parseFloat(row.harga) > 0) ? 'Rp ' + new Intl.NumberFormat('id-ID').format(row.harga) : '-'}</div>
+        <div style="grid-column: span 2"><strong>Total Biaya:</strong><br>${(row.total_biaya && parseFloat(row.total_biaya) > 0) ? 'Rp ' + new Intl.NumberFormat('id-ID').format(row.total_biaya) : '-'}</div>
       </div>
       <div style="margin-bottom:12px"><strong>Kerusakan:</strong><br>${row.kerusakan || '-'}</div>
       <div style="margin-bottom:12px"><strong>Action (Work Done):</strong><br>${row.action || '-'}</div>
@@ -884,32 +987,16 @@
       <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
         <strong>Dokumentasi Kegiatan (Evidence)</strong>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px;">
-          <div style="text-align: center; font-size: 11px;">
-            <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center;">
-              ${row.foto_masuk ? `<a href="/storage/${row.foto_masuk}" target="_blank"><img src="/storage/${row.foto_masuk}" style="width: 100%; height: 100%; object-fit: cover;"></a>` : '<span style="color: var(--text2)">Tidak ada</span>'}
-            </div>
-            <span style="font-weight: 600; display: block; margin-top: 4px;">Foto Masuk</span>
-          </div>
-          <div style="text-align: center; font-size: 11px;">
-            <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center;">
-              ${row.foto_proses ? `<a href="/storage/${row.foto_proses}" target="_blank"><img src="/storage/${row.foto_proses}" style="width: 100%; height: 100%; object-fit: cover;"></a>` : '<span style="color: var(--text2)">Tidak ada</span>'}
-            </div>
-            <span style="font-weight: 600; display: block; margin-top: 4px;">Foto Proses</span>
-          </div>
-          <div style="text-align: center; font-size: 11px;">
-            <div style="height: 80px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); display: flex; align-items: center; justify-content: center;">
-              ${row.foto_keluar ? `<a href="/storage/${row.foto_keluar}" target="_blank"><img src="/storage/${row.foto_keluar}" style="width: 100%; height: 100%; object-fit: cover;"></a>` : '<span style="color: var(--text2)">Tidak ada</span>'}
-            </div>
-            <span style="font-weight: 600; display: block; margin-top: 4px;">Foto Keluar</span>
-          </div>
+          ${renderEvidenceCol(row.foto_masuk, 'Foto Masuk')}
+          ${renderEvidenceCol(row.foto_proses, 'Foto Proses')}
+          ${renderEvidenceCol(row.foto_keluar, 'Foto Keluar')}
         </div>
       </div>
 
       <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
         <strong>Berita Acara (BA)</strong>
-        <div style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
-          <a href="/engineering/sparepart/${row.id}/print-ba" target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none;"><i class="fas fa-file-pdf"></i> Cetak BA Otomatis</a>
-          ${row.file_ba ? `<a href="/storage/${row.file_ba}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration: none; border-color: var(--success); color: var(--success);"><i class="fas fa-file-signature"></i> Lihat BA Signed</a>` : ''}
+        <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+          ${baButtons}
         </div>
       </div>
     `;

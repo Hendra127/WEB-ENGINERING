@@ -230,7 +230,7 @@
             <div class="header">
 
                 <div class="logo-box">
-                    <img src="{{ asset('images/logo_nustech.jpg') }}" alt="logo_nustech" />
+                    <img src="{{ file_exists(public_path('images/logo_nustech.png')) ? asset('images/logo_nustech.png') : asset('images/logo_nustech.jpg') }}" alt="logo_nustech" />
                 </div>
 
                 <h1>WELCOME TO ENGINEERING NUSTECH</h1>

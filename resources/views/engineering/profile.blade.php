@@ -10,7 +10,7 @@
     </div>
     <div style="font-size:20px;font-weight:700;margin-bottom:4px">{{ auth()->user()->name }}</div>
     <div style="color:var(--text2);font-size:14px;margin-bottom:12px">{{ auth()->user()->email }}</div>
-    <span class="badge badge-success" style="font-size:12px;padding:4px 14px"><i class="fas fa-shield-alt"></i> Administrator</span>
+    <span class="badge badge-success" style="font-size:12px;padding:4px 14px"><i class="fas fa-shield-alt"></i> {{ auth()->user()->jabatan ?? 'Administrator' }}</span>
     <div style="width:100%;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center">
       <div><div style="font-size:22px;font-weight:800;color:var(--primary)">48</div><div style="font-size:12px;color:var(--text2)">Sparepart</div></div>
       <div><div style="font-size:22px;font-weight:800;color:#10b981">32</div><div style="font-size:12px;color:var(--text2)">Alat Kantor</div></div>
@@ -47,8 +47,17 @@
             @error('phone') <span style="color:#ef4444;font-size:11px">{{ $message }}</span> @enderror
         </div>
 
-        <div class="form-group"><label>Jabatan</label><input type="text" value="Administrator" readonly style="background:var(--surface2);cursor:not-allowed"></div>
-        <div class="form-group"><label>Departemen</label><input type="text" value="Engineering" readonly style="background:var(--surface2);cursor:not-allowed"></div>
+        <div class="form-group">
+            <label>Jabatan</label>
+            <input type="text" name="jabatan" value="{{ old('jabatan', auth()->user()->jabatan ?? 'Administrator') }}" placeholder="Contoh: Administrator">
+            @error('jabatan') <span style="color:#ef4444;font-size:11px">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Departemen</label>
+            <input type="text" name="departemen" value="{{ old('departemen', auth()->user()->departemen ?? 'Engineering') }}" placeholder="Contoh: Engineering">
+            @error('departemen') <span style="color:#ef4444;font-size:11px">{{ $message }}</span> @enderror
+        </div>
         
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
             <button type="reset" class="btn btn-outline">Reset</button>

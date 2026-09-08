@@ -153,8 +153,9 @@ class PengajuanPerangkatController extends Controller
         return back()->with('success', 'Pengajuan telah ditolak.');
     }
 
-    public function destroy(PengajuanPerangkat $item)
+    public function destroy($id)
     {
+        $item = $id instanceof PengajuanPerangkat ? $id : PengajuanPerangkat::findOrFail($id);
         $item->delete();
         return back()->with('success', 'Pengajuan berhasil dihapus.');
     }

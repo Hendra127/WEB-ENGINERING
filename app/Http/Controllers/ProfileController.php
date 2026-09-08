@@ -21,12 +21,14 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $req->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email|unique:users,email,' . $user->id,
+            'phone'      => 'nullable|string|max:20',
+            'jabatan'    => 'nullable|string|max:255',
+            'departemen' => 'nullable|string|max:255',
         ]);
 
-        $user->update($req->only(['name', 'email', 'phone']));
+        $user->update($req->only(['name', 'email', 'phone', 'jabatan', 'departemen']));
 
         return back()->with('success', 'Profil berhasil diperbarui!');
     }

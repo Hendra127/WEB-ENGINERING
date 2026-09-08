@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Pengajuan Repair Perangkat - {{ $item->nama_perangkat }}</title>
+    <title>Formulir {{ $item->nama_perangkat }}</title>
     <style>
         @page {
             size: A4 portrait;
-            margin: 15mm 20mm;
+            margin: 0;
         }
         * {
             box-sizing: border-box;
@@ -17,7 +17,7 @@
             font-size: 11px;
             color: #0f172a;
             margin: 0;
-            padding: 20px 25px;
+            padding: 15mm 20mm;
             background: #ffffff;
             line-height: 1.4;
         }
@@ -97,6 +97,48 @@
             color: #0f172a;
         }
 
+        /* Letter Style for Pembelian Rumah Tangga */
+        .letter-top-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 11px;
+        }
+        .letter-left-meta {
+            width: 60%;
+        }
+        .letter-left-meta table {
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .letter-left-meta td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+        .letter-right-meta {
+            width: 38%;
+            text-align: right;
+            font-size: 11px;
+        }
+        .letter-recipient-box {
+            margin-top: 8px;
+            margin-bottom: 14px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .letter-salutation {
+            margin-bottom: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .letter-closing {
+            margin-top: 14px;
+            margin-bottom: 14px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
         /* Statement Text */
         .statement-text {
             font-size: 11px;
@@ -140,8 +182,8 @@
         .date-location {
             text-align: center;
             font-size: 11px;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            margin-top: 16px;
+            margin-bottom: 24px;
             color: #0f172a;
         }
 
@@ -152,7 +194,7 @@
         .sig-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 22px;
+            margin-bottom: 26px;
         }
         .sig-box {
             width: 44%;
@@ -169,15 +211,15 @@
             color: #0f172a;
         }
         .sig-space {
-            height: 52px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
         }
         .sig-overlay-svg {
-            max-height: 48px;
-            max-width: 130px;
+            max-height: 52px;
+            max-width: 135px;
         }
         .sig-name {
             font-weight: bold;
@@ -221,7 +263,7 @@
 
         @media print {
             body {
-                padding: 0;
+                padding: 15mm 20mm;
                 margin: 0;
             }
             .no-print-bar {
@@ -236,10 +278,16 @@
         $details = $item->details ?? [];
         
         $rawTipe = $details['tipe_pengajuan'] ?? 'repair';
+        $isPembelianRT = ($rawTipe === 'pembelian_rt' || $rawTipe === 'rumah_tangga');
+
         if (strtolower($rawTipe) === 'repair' || strtolower($rawTipe) === 'repair perangkat') {
             $tipeJudulLine1 = "FORMULIR PENGAJUAN";
             $tipeJudulLine2 = "REPAIR PERANGKAT";
             $tipeDisplay = "Repair Perangkat";
+        } elseif ($isPembelianRT) {
+            $tipeJudulLine1 = "PERMOHONAN PEMBELIAN";
+            $tipeJudulLine2 = "PERALATAN RUMAH TANGGA";
+            $tipeDisplay = "Pembelian Peralatan Rumah Tangga";
         } else {
             $tipeJudulLine1 = "FORMULIR PENGAJUAN";
             $tipeJudulLine2 = "PERANGKAT";
@@ -261,7 +309,12 @@
 
         $divisi = $details['divisi'] ?? 'Manage Service AI BAKTI';
         $noPengajuan = !empty($details['no_pengajuan']) ? $details['no_pengajuan'] : '-';
-        $keteranganPengajuan = $details['keterangan_pengajuan'] ?? 'Dengan ini saya mengajukan perangkat sparepart untuk pergantian perangkat yang rusak dengan perincian sebagai berikut :';
+        
+        if ($isPembelianRT && (empty($details['keterangan_pengajuan']) || $details['keterangan_pengajuan'] === 'Dengan ini saya mengajukan perangkat sparepart untuk pergantian perangkat yang rusak dengan perincian sebagai berikut :')) {
+            $keteranganPengajuan = 'Sehubungan dengan kebutuhan operasional dan sarana prasarana rumah tangga / mess, dengan ini kami mengajukan permohonan pembelian peralatan rumah tangga dengan perincian sebagai berikut:';
+        } else {
+            $keteranganPengajuan = $details['keterangan_pengajuan'] ?? 'Dengan ini saya mengajukan perangkat sparepart untuk pergantian perangkat yang rusak dengan perincian sebagai berikut :';
+        }
         
         $itemsList = $details['items'] ?? [];
         $grandTotal = floatval($details['grand_total'] ?? 0);
@@ -288,7 +341,9 @@
     <!-- Header Section -->
     <div class="header-wrap">
         <div class="logo-box">
-            @if(file_exists(public_path('images/logo_nustech.jpg')))
+            @if(file_exists(public_path('images/logo_nustech.png')))
+                <img src="{{ asset('images/logo_nustech.png') }}" alt="NUSTECH">
+            @elseif(file_exists(public_path('images/logo_nustech.jpg')))
                 <img src="{{ asset('images/logo_nustech.jpg') }}" alt="NUSTECH">
             @else
                 <div class="logo-fallback">
@@ -311,6 +366,48 @@
     <!-- Blue Line Divider -->
     <hr class="header-divider">
 
+    @if($isPembelianRT)
+    <!-- Letter Style Metadata & Recipient Header for Pembelian RT -->
+    <div class="letter-top-meta">
+        <div class="letter-left-meta">
+            <table>
+                <tr>
+                    <td style="width: 70px;">Nomor</td>
+                    <td style="width: 15px;">:</td>
+                    <td>{{ $noPengajuan }}</td>
+                </tr>
+                <tr>
+                    <td>Lamp.</td>
+                    <td>:</td>
+                    <td>1 Lembar</td>
+                </tr>
+                <tr>
+                    <td>Perihal</td>
+                    <td>:</td>
+                    <td><strong>Permohonan Pembelian Peralatan Rumah Tangga</strong></td>
+                </tr>
+            </table>
+        </div>
+        <div class="letter-right-meta">
+            {{ $tempat }}, {{ $tanggalMeta }}
+        </div>
+    </div>
+
+    <div class="letter-recipient-box">
+        Kepada Yth.<br>
+        <strong>Direktur & Management</strong><br>
+        PT Nusa Network Prakarsa<br>
+        Di _ Tempat.
+    </div>
+
+    <div class="letter-salutation">
+        Assalamu 'Alaikum Wr. Wb. / Dengan hormat,
+    </div>
+
+    <div class="statement-text">
+        {{ $keteranganPengajuan }}
+    </div>
+    @else
     <!-- Metadata Section -->
     <table class="meta-table">
         <tr>
@@ -339,6 +436,7 @@
     <div class="statement-text">
         {{ $keteranganPengajuan }}
     </div>
+    @endif
 
     <!-- Items Perincian Table -->
     <table class="items-table">
@@ -397,6 +495,12 @@
             </tr>
         </tbody>
     </table>
+
+    @if($isPembelianRT)
+    <div class="letter-closing">
+        Demikian permohonan ini kami sampaikan. Atas perhatian, bantuan, dan persetujuan Bapak/Ibu, kami ucapkan terima kasih.
+    </div>
+    @endif
 
     <!-- Location & Date above Signatures -->
     <div class="date-location">

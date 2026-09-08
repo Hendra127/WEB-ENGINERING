@@ -6,8 +6,8 @@
 @section('content')
 <style>
     .page-header-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--surface, #ffffff);
+        border: 1px solid var(--border, #e2e8f0);
         border-radius: 12px;
         padding: 18px 24px;
         margin-bottom: 20px;
@@ -16,7 +16,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 16px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        box-shadow: var(--shadow, 0 1px 3px rgba(0, 0, 0, 0.03));
     }
     .page-header-title {
         display: flex;
@@ -27,8 +27,8 @@
         width: 42px;
         height: 42px;
         border-radius: 10px;
-        background: rgba(37, 99, 235, 0.1);
-        color: #2563eb;
+        background: rgba(37, 99, 235, 0.12);
+        color: #3b82f6;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -37,22 +37,22 @@
     .page-header-heading {
         font-size: 18px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--text, #0f172a);
         margin: 0;
     }
     .page-header-subtext {
         font-size: 12px;
-        color: #64748b;
+        color: var(--text2, #64748b);
         margin-top: 2px;
     }
     .stat-badge {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: var(--surface2, #f8fafc);
+        border: 1px solid var(--border, #e2e8f0);
         border-radius: 20px;
         padding: 6px 16px;
         font-size: 13px;
         font-weight: 600;
-        color: #475569;
+        color: var(--text2, #475569);
         display: flex;
         align-items: center;
         gap: 8px;
@@ -67,12 +67,12 @@
     }
     /* Filter Card */
     .filter-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--surface, #ffffff);
+        border: 1px solid var(--border, #e2e8f0);
         border-radius: 12px;
         padding: 12px 16px;
         margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        box-shadow: var(--shadow, 0 1px 3px rgba(0, 0, 0, 0.02));
     }
     .filter-form {
         display: flex;
@@ -85,10 +85,10 @@
         max-width: 170px;
         border-radius: 8px;
         padding: 6px 28px 6px 10px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid var(--border, #cbd5e1);
         font-size: 12.5px;
-        color: #334155;
-        background-color: #ffffff;
+        color: var(--text, #334155);
+        background-color: var(--surface, #ffffff);
         height: 36px;
         outline: none;
         transition: all 0.2s ease;
@@ -96,10 +96,10 @@
     .form-input-custom {
         border-radius: 8px;
         padding: 6px 12px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid var(--border, #cbd5e1);
         font-size: 12.5px;
-        color: #334155;
-        background-color: #ffffff;
+        color: var(--text, #334155);
+        background-color: var(--surface, #ffffff);
         height: 36px;
         outline: none;
         transition: all 0.2s ease;
@@ -140,9 +140,9 @@
         width: 36px;
         height: 36px;
         border-radius: 8px;
-        border: 1px solid #cbd5e1;
-        background: #ffffff;
-        color: #64748b;
+        border: 1px solid var(--border, #cbd5e1);
+        background: var(--surface, #ffffff);
+        color: var(--text2, #64748b);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -152,15 +152,15 @@
         flex-shrink: 0;
     }
     .btn-reset:hover {
-        background: #f1f5f9;
-        color: #0f172a;
+        background: var(--surface2, #f1f5f9);
+        color: var(--text, #0f172a);
     }
 
     .table-container {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--surface, #ffffff);
+        border: 1px solid var(--border, #e2e8f0);
         border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        box-shadow: var(--shadow, 0 1px 3px rgba(0,0,0,0.02));
         overflow: hidden;
     }
     .custom-table {
@@ -169,25 +169,26 @@
         font-size: 13px;
     }
     .custom-table th {
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
+        background: var(--surface2, #f8fafc);
+        border-bottom: 1px solid var(--border, #e2e8f0);
         padding: 12px 16px;
         font-size: 11px;
         font-weight: 700;
-        color: #64748b;
+        color: var(--text2, #64748b);
         letter-spacing: 0.5px;
         text-transform: uppercase;
     }
     .custom-table td {
         padding: 14px 16px;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border, #f1f5f9);
         vertical-align: middle;
+        color: var(--text);
     }
     .custom-table tr:last-child td {
         border-bottom: none;
     }
     .custom-table tr:hover {
-        background-color: #f8fafc;
+        background-color: var(--surface2, #f8fafc);
     }
 
     .status-badge {
@@ -201,13 +202,13 @@
     }
     .status-badge-paid {
         background: rgba(16, 185, 129, 0.12);
-        color: #059669;
-        border: 1px solid rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.25);
     }
     .status-badge-unpaid {
         background: rgba(239, 68, 68, 0.12);
-        color: #dc2626;
-        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.25);
     }
 
     .stepper-dots {
@@ -226,7 +227,7 @@
         background: #10b981;
     }
     .stepper-dot.inactive {
-        background: #cbd5e1;
+        background: var(--border, #cbd5e1);
     }
 
     .btn-action-group {
@@ -241,48 +242,92 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #e2e8f0;
-        background: #ffffff;
+        border: 1px solid var(--border, #e2e8f0);
+        background: var(--surface, #ffffff);
         font-size: 13px;
         cursor: pointer;
         transition: all 0.2s ease;
         text-decoration: none;
     }
     .btn-tbl-action.btn-view {
-        color: #0284c7;
-        border-color: #bae6fd;
-        background: #f0f9ff;
+        color: #38bdf8;
+        border-color: rgba(56, 189, 248, 0.3);
+        background: rgba(56, 189, 248, 0.1);
     }
     .btn-tbl-action.btn-view:hover {
         background: #0284c7;
         color: #ffffff;
     }
     .btn-tbl-action.btn-print {
-        color: #475569;
-        border-color: #cbd5e1;
+        color: var(--text2, #475569);
+        border-color: var(--border, #cbd5e1);
     }
     .btn-tbl-action.btn-print:hover {
-        background: #f1f5f9;
-        color: #0f172a;
+        background: var(--surface2, #f1f5f9);
+        color: var(--text, #0f172a);
     }
     .btn-tbl-action.btn-edit {
-        color: #d97706;
-        border-color: #fde68a;
-        background: #fffbeb;
+        color: #fbbf24;
+        border-color: rgba(251, 191, 36, 0.3);
+        background: rgba(251, 191, 36, 0.1);
     }
     .btn-tbl-action.btn-edit:hover {
         background: #d97706;
         color: #ffffff;
     }
     .btn-tbl-action.btn-delete {
-        color: #dc2626;
-        border-color: #fecaca;
-        background: #fef2f2;
+        color: #f87171;
+        border-color: rgba(248, 113, 113, 0.3);
+        background: rgba(248, 113, 113, 0.1);
     }
     .btn-tbl-action.btn-delete:hover {
         background: #dc2626;
         color: #ffffff;
     }
+
+    /* Dark Mode Global Overrides for Modals, Dynamic Row Cards & Form Control */
+    html.dark .modal {
+        background: var(--surface, #1e293b) !important;
+        color: var(--text, #f1f5f9) !important;
+        border: 1px solid var(--border, #334155) !important;
+    }
+    html.dark .modal h3, html.dark .modal h4, html.dark .modal h5, html.dark .modal label {
+        color: var(--text, #f1f5f9) !important;
+    }
+    html.dark .modal input, html.dark .modal select, html.dark .modal textarea,
+    html.dark .form-select-custom, html.dark .form-input-custom {
+        background-color: var(--surface2, #263548) !important;
+        color: var(--text, #f1f5f9) !important;
+        border-color: var(--border, #334155) !important;
+    }
+    html.dark .device-item-row {
+        background: var(--surface2, #263548) !important;
+        border-color: var(--border, #334155) !important;
+    }
+    html.dark .modal div[style*="background: #f8fafc"],
+    html.dark .modal div[style*="background:#f8fafc"],
+    html.dark .modal div[style*="background: #ffffff"],
+    html.dark .modal div[style*="background:#ffffff"],
+    html.dark .modal div[style*="background: #fff"],
+    html.dark .modal div[style*="background:#fff"] {
+        background: var(--surface2, #263548) !important;
+        border-color: var(--border, #334155) !important;
+        color: var(--text, #f1f5f9) !important;
+    }
+    html.dark .modal span[style*="background: #f1f5f9"],
+    html.dark .modal span[style*="background:#f1f5f9"] {
+        background: var(--surface, #1e293b) !important;
+        border-color: var(--border, #334155) !important;
+        color: var(--text2, #94a3b8) !important;
+    }
+    html.dark .modal td, html.dark .modal th {
+        border-color: var(--border, #334155) !important;
+        color: var(--text, #f1f5f9) !important;
+    }
+    html.dark .modal th {
+        background: var(--surface, #1e293b) !important;
+    }
+</style>
 </style>
 
 <!-- Clean Header Bar -->
@@ -309,6 +354,7 @@
             <option value="">Semua Klasifikasi</option>
             <option value="pembelian" {{ request('klasifikasi')=='pembelian'?'selected':'' }}>Pembelian Baru (Stok)</option>
             <option value="repair" {{ request('klasifikasi')=='repair'?'selected':'' }}>Repair Perangkat</option>
+            <option value="pembelian_rt" {{ request('klasifikasi')=='pembelian_rt'?'selected':'' }}>Pembelian Peralatan Rumah Tangga</option>
         </select>
 
         <select name="status_bayar" class="form-select-custom" onchange="this.form.submit()">
@@ -379,15 +425,15 @@
                     $deviceSummaryText = !empty($deviceSummaryList) ? implode(', ', $deviceSummaryList) : $item->nama_perangkat;
                 @endphp
                 <tr>
-                    <td style="color:#1e293b; font-weight:600; max-width:320px;">
+                    <td style="color:var(--text, #1e293b); font-weight:600; max-width:320px;">
                         <div style="font-size:13.5px; line-height:1.4;">{{ $deviceSummaryText }}</div>
                         @if(!empty($details['no_pengajuan']))
-                            <div style="font-size:11px; color:#64748b; font-weight:400; margin-top:3px;">
+                            <div style="font-size:11px; color:var(--text2, #64748b); font-weight:400; margin-top:3px;">
                                 <i class="fas fa-hashtag" style="font-size:10px;"></i> {{ $details['no_pengajuan'] }}
                             </div>
                         @endif
                     </td>
-                    <td style="text-align:center; font-weight:700; color:#059669; font-size:14px;">
+                    <td style="text-align:center; font-weight:700; color:#10b981; font-size:14px;">
                         Rp {{ number_format($grandTotal, 0, ',', '.') }}
                     </td>
                     <td style="text-align:center;">
@@ -397,7 +443,7 @@
                                     <i class="fas fa-check-circle"></i> Lunas
                                 </span>
                             </div>
-                            <button type="button" class="btn btn-sm" onclick="showPaymentInfo({{ json_encode($item) }})" style="background:#e0f2fe; color:#0284c7; border-radius:6px; font-size:10px; font-weight:700; padding:2px 8px; margin-top:5px; border:1px solid #bae6fd; cursor:pointer;">
+                            <button type="button" class="btn btn-sm" onclick="showPaymentInfo({{ json_encode($item) }})" style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; border-radius:6px; font-size:10px; font-weight:700; padding:2px 8px; margin-top:5px; border:1px solid rgba(56, 189, 248, 0.3); cursor:pointer;">
                                 <i class="fas fa-info-circle"></i> Info
                             </button>
                         @else
@@ -409,29 +455,29 @@
                     <td style="text-align:center;">
                         @php
                             $stepCount = 1;
-                            $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
+                            $badgeStyle = 'background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);';
                             $statusText = 'Menunggu Manager';
 
                             if ($item->status === 'pending_leader' || $item->status === 'pending_manager') {
                                 $stepCount = 1;
                                 $statusText = 'Menunggu Manager';
-                                $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
+                                $badgeStyle = 'background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);';
                             } elseif ($item->status === 'pending_accounting') {
                                 $stepCount = 2;
                                 $statusText = 'Disetujui Manager – Menunggu Accounting';
-                                $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
+                                $badgeStyle = 'background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);';
                             } elseif ($item->status === 'pending_direktur') {
                                 $stepCount = 3;
                                 $statusText = 'Disetujui Accounting – Menunggu Direktur';
-                                $badgeStyle = 'background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;';
+                                $badgeStyle = 'background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);';
                             } elseif ($item->status === 'pending_penasihat' || $item->status === 'approved') {
                                 $stepCount = 3;
                                 $statusText = 'Disetujui (Lengkap)';
-                                $badgeStyle = 'background:#ecfdf5; color:#059669; border:1px solid #a7f3d0;';
+                                $badgeStyle = 'background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3);';
                             } elseif ($item->status === 'rejected') {
                                 $stepCount = 0;
                                 $statusText = 'Ditolak';
-                                $badgeStyle = 'background:#fef2f2; color:#dc2626; border:1px solid #fecaca;';
+                                $badgeStyle = 'background:rgba(239, 68, 68, 0.15); color:#f87171; border:1px solid rgba(239, 68, 68, 0.3);';
                             }
                         @endphp
                         
@@ -485,11 +531,11 @@
                                 </button>
                             @endif
 
-                            @if(in_array($userRole, ['admin', 'manager']))
-                                <form action="{{ route('engineering.pengajuan_perangkat.destroy', $item->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Hapus data pengajuan ini?');">
+                            @if(in_array($userRole, ['admin', 'manager', 'leader', 'karyawan']) || $item->user_id === auth()->id())
+                                <form action="{{ route('engineering.pengajuan_perangkat.destroy', $item->id) }}" method="POST" style="margin:0; display:inline-block;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-tbl-action btn-delete" title="Hapus">
+                                    <button type="button" class="btn-tbl-action btn-delete" onclick="if(confirm('Apakah Anda yakin ingin menghapus data pengajuan ini?')) { this.closest('form').submit(); }" title="Hapus Pengajuan">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -537,6 +583,7 @@
                     <select name="tipe_pengajuan" id="tipe_pengajuan_select" onchange="updateTipePengajuan(this.value)" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 13px; background: #fff;">
                         <option value="repair">Repair Perangkat</option>
                         <option value="pembelian">Pengajuan Perangkat (Pembelian)</option>
+                        <option value="pembelian_rt">Pengajuan Pembelian Peralatan Rumah Tangga</option>
                     </select>
                 </div>
             </div>
@@ -589,7 +636,7 @@
 
                 <div style="margin-bottom: 10px;">
                     <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 4px;">Terbilang</label>
-                    <input type="text" id="terbilangInput" name="terbilang" readonly style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #334155; width: 100%; font-weight: 500;" value="Nol Rupiah">
+                    <input type="text" id="terbilangInput" name="terbilang" oninput="onTerbilangManualInput(this.value)" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: #334155; width: 100%; font-weight: 500;" value="Nol Rupiah">
                 </div>
 
                 <div>
@@ -613,7 +660,7 @@
                         </select>
                         <select name="pemohon_jabatan" id="form_pemohon_jabatan" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #ffffff;">
                             <option value="Engineering Leader">Engineering Leader</option>
-                            <option value="Leader Rumah Tangga">Leader Rumah Tangga</option>
+                            <option value="Rumah Tangga">Rumah Tangga</option>
                             <option value="NOC Leader">NOC Leader</option>
                             <option value="Leader VSAT">Leader VSAT</option>
                         </select>
@@ -722,11 +769,23 @@
 @section('scripts')
 <script>
 let itemIndex = 0;
+let isTerbilangManual = false;
+
+function onTerbilangManualInput(val) {
+    if (val.trim() === '') {
+        isTerbilangManual = false;
+        const grandTotal = parseFloat(document.getElementById('grandTotalValue').value) || 0;
+        document.getElementById('terbilangInput').value = terbilang(grandTotal);
+    } else {
+        isTerbilangManual = true;
+    }
+}
 
 function openModal(id) { 
     document.getElementById(id).classList.add('open'); 
     if (id === 'addModal' && !document.getElementById('edit_id').value) {
         document.getElementById('modalHeaderTitle').innerText = 'Pengajuan Perangkat';
+        isTerbilangManual = false;
         if (document.getElementById('deviceItemsWrapper').children.length === 0) {
             addDeviceRow('MODEM HT2010', 1, 0, 'MITRA/KANTOR', 'STOK', '-');
         }
@@ -737,6 +796,11 @@ function closeModal(id) {
     document.getElementById(id).classList.remove('open'); 
     if (id === 'addModal') {
         document.getElementById('edit_id').value = '';
+        document.getElementById('deviceItemsWrapper').innerHTML = '';
+        document.getElementById('grandTotalValue').value = 0;
+        document.getElementById('grandTotalDisplay').innerText = '0';
+        document.getElementById('terbilangInput').value = '';
+        isTerbilangManual = false;
     }
 }
 
@@ -746,6 +810,9 @@ function updateTipePengajuan(val) {
     if (val === 'repair') {
         headerTitle.innerText = 'Repair Perangkat';
         headerIcon.className = 'fas fa-tools';
+    } else if (val === 'pembelian_rt') {
+        headerTitle.innerText = 'Pengajuan Pembelian Rumah Tangga';
+        headerIcon.className = 'fas fa-home';
     } else {
         headerTitle.innerText = 'Pengajuan Perangkat';
         headerIcon.className = 'fas fa-desktop';
@@ -844,12 +911,15 @@ function recalculateGrandTotal() {
 
     document.getElementById('grandTotalValue').value = grandTotal;
     document.getElementById('grandTotalDisplay').innerText = grandTotal.toLocaleString('id-ID');
-    document.getElementById('terbilangInput').value = terbilang(grandTotal);
+    
+    if (!isTerbilangManual) {
+        document.getElementById('terbilangInput').value = terbilang(grandTotal);
+    }
 }
 
 function terbilang(angka) {
     angka = Math.abs(parseInt(angka)) || 0;
-    if (angka === 0) return "Nol Rupiah";
+    if (angka === 0) return "";
     const bil = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
     let hasil = "";
     if (angka < 12) hasil = bil[angka];
@@ -990,15 +1060,15 @@ function openEditModal(item) {
         addDeviceRow(item.nama_perangkat || '', 1, 0, 'MITRA/KANTOR', 'STOK', '-');
     }
 
+    if (details.terbilang) {
+        document.getElementById('terbilangInput').value = details.terbilang;
+        isTerbilangManual = true;
+    }
+
     if (details.tertanda) {
-        if (details.tertanda.pemohon_nama) {
-            const el = document.getElementById('form_pemohon_nama') || document.querySelector('[name="pemohon_nama"]');
-            if (el) el.value = details.tertanda.pemohon_nama;
-        }
-        if (details.tertanda.pemohon_jabatan) {
-            const el = document.getElementById('form_pemohon_jabatan') || document.querySelector('[name="pemohon_jabatan"]');
-            if (el) el.value = details.tertanda.pemohon_jabatan;
-        }
+        const t = details.tertanda;
+        if (t.pemohon_nama && document.getElementById('form_pemohon_nama')) document.getElementById('form_pemohon_nama').value = t.pemohon_nama;
+        if (t.pemohon_jabatan && document.getElementById('form_pemohon_jabatan')) document.getElementById('form_pemohon_jabatan').value = t.pemohon_jabatan;
     }
 
     openModal('addModal');
