@@ -341,10 +341,10 @@
     <!-- Header Section -->
     <div class="header-wrap">
         <div class="logo-box">
-            @if(file_exists(public_path('images/logo_nustech.png')))
-                <img src="{{ asset('images/logo_nustech.png') }}" alt="NUSTECH">
-            @elseif(file_exists(public_path('images/logo_nustech.jpg')))
-                <img src="{{ asset('images/logo_nustech.jpg') }}" alt="NUSTECH">
+            @if(file_exists(public_path('images/logo_nustechnew.jpg')))
+                <img src="{{ asset('images/logo_nustechnew.jpg') }}" alt="NUSTECH">
+            @elseif(file_exists(public_path('images/logo_nustechnew.jpg')))
+                <img src="{{ asset('images/logo_nustechnew.jpg') }}" alt="NUSTECH">
             @else
                 <div class="logo-fallback">
                     <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
