@@ -531,11 +531,11 @@
                                 </button>
                             @endif
 
-                            @if(in_array($userRole, ['admin', 'manager', 'leader', 'karyawan']) || $item->user_id === auth()->id())
-                                <form action="{{ route('engineering.pengajuan_perangkat.destroy', $item->id) }}" method="POST" style="margin:0; display:inline-block;">
+                            @if(in_array($userRole, ['admin', 'manager']))
+                                <form action="{{ route('engineering.pengajuan_perangkat.destroy', $item->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Hapus data pengajuan ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn-tbl-action btn-delete" onclick="if(confirm('Apakah Anda yakin ingin menghapus data pengajuan ini?')) { this.closest('form').submit(); }" title="Hapus Pengajuan">
+                                    <button type="submit" class="btn-tbl-action btn-delete" title="Hapus">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -564,7 +564,7 @@
 <!-- Modal Pengajuan Perangkat (Siap Print) -->
 <div class="modal-overlay" id="addModal">
     <div class="modal" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0; border-radius: 12px;">
-        <div class="modal-header" style="background: #15803d; color: #ffffff; padding: 14px 20px; border-top-left-radius: 12px; border-top-right-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+        <div class="modal-header" style="background: #335941ff; color: #ffffff; padding: 14px 20px; border-top-left-radius: 12px; border-top-right-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
             <h3 class="modal-title" style="color: #ffffff; font-size: 17px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
                 <i class="fas fa-desktop" id="modalHeaderIcon"></i> <span id="modalHeaderTitle">Pengajuan Perangkat</span>
             </h3>
