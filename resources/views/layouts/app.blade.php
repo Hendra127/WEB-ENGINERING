@@ -26,6 +26,11 @@ html.dark {
   --sidebar: #0f172a; --shadow: 0 1px 3px rgba(0,0,0,.3);
   --shadow-lg: 0 10px 25px rgba(0,0,0,.4);
 }
+html { scroll-behavior: smooth; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 10px; height: 10px; }
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track { background: var(--bg); }
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; transition:var(--transition); }
 /* SIDEBAR */
@@ -80,7 +85,18 @@ body.sidebar-compact .main { margin-left: 70px; }
 .stat-value { font-size:26px; font-weight:800; line-height:1; }
 .stat-label { font-size:13px; color:var(--text2); margin-top:4px; }
 /* TABLE */
-.table-wrap { overflow-x:auto; border-radius:var(--radius-sm); }
+.table-wrap { 
+  overflow-x:auto; 
+  border-radius:var(--radius-sm); 
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--surface2);
+}
+.table-wrap:active { cursor: grabbing; }
+.table-wrap::-webkit-scrollbar { height: 10px; }
+.table-wrap::-webkit-scrollbar-track { background: var(--surface2); border-radius: 5px; }
+.table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; transition: background 0.2s; }
+.table-wrap::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 table { width:100%; border-collapse:collapse; font-size:13px; }
 thead th { background:var(--surface2); padding:10px 14px; text-align:left; font-weight:600; font-size:12px; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; border-bottom:2px solid var(--border); white-space:nowrap; }
 tbody td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
@@ -336,8 +352,83 @@ setInterval(function() {
 ['onload', 'onmousemove', 'onmousedown', 'ontouchstart', 'onclick', 'onkeypress', 'onscroll'].forEach(evt => {
     window[evt] = resetTimer;
 });
-</script>
 
+// Global Drag-to-Scroll (Hold Klik Kanan / Klik Kiri) & Mouse Wheel Scroll for Table Wrappers
+document.addEventListener('DOMContentLoaded', function () {
+  const initTableDragScroll = () => {
+    const wraps = document.querySelectorAll('.table-wrap');
+    wraps.forEach(wrap => {
+      if (wrap.dataset.dragInitialized) return;
+      wrap.dataset.dragInitialized = 'true';
+
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
+      let hasDragged = false;
+
+      wrap.addEventListener('mousedown', (e) => {
+        // Accept Left-click (0) or Right-click (2)
+        if (e.button !== 0 && e.button !== 2) return;
+        if (e.target.closest('button, a, input, select, textarea, label')) return;
+
+        isDown = true;
+        hasDragged = false;
+        wrap.style.cursor = 'grabbing';
+        startX = e.pageX - wrap.offsetLeft;
+        scrollLeft = wrap.scrollLeft;
+      });
+
+      wrap.addEventListener('mouseleave', () => {
+        isDown = false;
+        wrap.style.cursor = 'grab';
+      });
+
+      wrap.addEventListener('mouseup', () => {
+        isDown = false;
+        wrap.style.cursor = 'grab';
+      });
+
+      wrap.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - wrap.offsetLeft;
+        const walk = (x - startX) * 1.8;
+        if (Math.abs(walk) > 3) {
+          hasDragged = true;
+          e.preventDefault();
+          wrap.scrollLeft = scrollLeft - walk;
+        }
+      });
+
+      // Mencegah menu konteks klik kanan muncul saat menyeret (drag)
+      wrap.addEventListener('contextmenu', (e) => {
+        if (hasDragged) {
+          e.preventDefault();
+          hasDragged = false;
+        }
+      });
+
+      wrap.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0 && !e.shiftKey) {
+          if (wrap.scrollWidth > wrap.clientWidth) {
+            wrap.scrollLeft += e.deltaY;
+            e.preventDefault();
+          }
+        }
+      }, { passive: false });
+    });
+  };
+
+  initTableDragScroll();
+});
+
+function scrollTableHorizontally(btn, amount) {
+  const container = btn.closest('.card') || btn.closest('.table-container') || document;
+  const wrap = container.querySelector('.table-wrap') || document.querySelector('.table-wrap');
+  if (wrap) {
+    wrap.scrollBy({ left: amount, behavior: 'smooth' });
+  }
+}
+</script>
 
 @yield('scripts')
 </body>
