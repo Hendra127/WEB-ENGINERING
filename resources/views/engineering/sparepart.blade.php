@@ -102,7 +102,6 @@
             <th>Tgl Selesai</th>
             <th>Kerusakan</th>
             <th>Action</th>
-            <th>Pergantian Perangkat</th>
             <th>Keterangan Tambahan</th>
             <th>Harga Barang</th>
             <th>Total Biaya</th>
@@ -133,7 +132,6 @@
               <td style="white-space:nowrap">{{ $row->tgl_selesai?->format('d/m/Y') ?: '-' }}</td>
               <td style="min-width:200px;font-size:12px">{{ $row->kerusakan ?: '-' }}</td>
               <td style="min-width:280px;font-size:12px">{{ $row->action ?: '-' }}</td>
-              <td style="min-width:280px;font-size:12px">{{ $row->pergantian_perangkat ?: '-' }}</td>
               <td style="min-width:200px;font-size:12px">{{ $row->keterangan_tambahan ?: '-' }}</td>
               <td style="white-space:nowrap">{{ ($row->harga && $row->harga > 0) ? 'Rp ' . number_format($row->harga, 0, ',', '.') : '-' }}</td>
               <td style="white-space:nowrap;font-weight:700;color:var(--primary)">{{ ($row->total_biaya && $row->total_biaya > 0) ? 'Rp ' . number_format($row->total_biaya, 0, ',', '.') : '-' }}</td>
@@ -246,15 +244,9 @@
               placeholder="Tindakan yang dilakukan..."></textarea></div>
         </div>
         <div class="grid-2">
-          <div class="form-group"><label>Pergantian Perangkat</label><input type="text" name="pergantian_perangkat"
-              placeholder="Pergantian perangkat..."></div>
           <div class="form-group"><label>Keterangan Tambahan</label><input type="text" name="keterangan_tambahan"
               placeholder="Keterangan tambahan..."></div>
-        </div>
-        <div class="grid-2">
           <div class="form-group"><label>Harga Barang</label><input type="number" name="harga" placeholder="-"></div>
-          <div class="form-group"><label>Pengantaran Perangkat</label><input type="text" name="pengantaran_perangkat"
-              placeholder="Pengantaran..."></div>
         </div>
         <div class="form-group"><label>Catatan Lainnya</label><textarea name="keterangan" rows="1"
             placeholder="Catatan..."></textarea></div>
@@ -396,15 +388,9 @@
               rows="2"></textarea></div>
         </div>
         <div class="grid-2">
-          <div class="form-group"><label>Pergantian Perangkat</label><input type="text" name="pergantian_perangkat"
-              id="e_pergantian"></div>
           <div class="form-group"><label>Keterangan Tambahan</label><input type="text" name="keterangan_tambahan"
               id="e_keterangan_tambahan"></div>
-        </div>
-        <div class="grid-2">
           <div class="form-group"><label>Harga Barang</label><input type="number" name="harga" id="e_harga" placeholder="-"></div>
-          <div class="form-group"><label>Pengantaran Perangkat</label><input type="text" name="pengantaran_perangkat"
-              id="e_pengantaran"></div>
         </div>
         <div class="form-group"><label>Catatan Lainnya</label><textarea name="keterangan" id="e_keterangan"
             rows="1"></textarea></div>
@@ -914,7 +900,6 @@
       document.getElementById('e_tgl_selesai').value = row.tgl_selesai ? row.tgl_selesai.substring(0, 10) : '';
       document.getElementById('e_kerusakan').value = row.kerusakan || '';
       document.getElementById('e_action').value = row.action || '';
-      document.getElementById('e_pergantian').value = row.pergantian_perangkat || '';
       document.getElementById('e_harga').value = (row.harga && parseFloat(row.harga) > 0) ? row.harga : '';
       document.getElementById('e_keterangan').value = row.keterangan || '';
       document.getElementById('e_keterangan_tambahan').value = row.keterangan_tambahan || '';
@@ -980,7 +965,6 @@
       </div>
       <div style="margin-bottom:12px"><strong>Kerusakan:</strong><br>${row.kerusakan || '-'}</div>
       <div style="margin-bottom:12px"><strong>Action (Work Done):</strong><br>${row.action || '-'}</div>
-      <div style="margin-bottom:12px"><strong>Pergantian Perangkat:</strong><br>${row.pergantian_perangkat || '-'}</div>
       <div style="margin-bottom:12px"><strong>Keterangan Tambahan:</strong><br>${row.keterangan_tambahan || '-'}</div>
        <div style="margin-bottom:12px"><strong>Catatan:</strong><br>${row.keterangan || '-'}</div>
 
