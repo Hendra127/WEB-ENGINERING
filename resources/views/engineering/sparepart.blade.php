@@ -845,7 +845,7 @@
         let html = `<div style="margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--primary);"><i class="fas fa-images"></i> ${fieldTitle} Tersimpan (${list.length}):</div>`;
         html += `<div class="saved-gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 6px; margin-top: 4px;">`;
         list.forEach(p => {
-          const url = '{{ asset("storage") }}/' + p;
+          const url = '/serve-file/' + p;
           const isPdf = p.toLowerCase().endsWith('.pdf') || p.toLowerCase().endsWith('.doc') || p.toLowerCase().endsWith('.docx');
           if (isPdf) {
             html += `
@@ -941,7 +941,7 @@
         <div style="text-align: center; font-size: 11px;">
           <div style="display: flex; gap: 4px; overflow-x: auto; padding: 2px;">`;
       list.forEach(p => {
-        const url = '/storage/' + p;
+        const url = '/serve-file/' + p;
         html += `
           <div style="width: 80px; height: 80px; flex-shrink: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: #0f172a; position: relative;">
             <img src="${url}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" title="Klik untuk Review" onclick="openReviewModal('${url}', '${label}')">
@@ -957,10 +957,10 @@
 
     function viewSparepart(row) {
       const baFiles = parsePhotos(row.file_ba);
-      let baButtons = `<a href="/engineering/sparepart/${row.id}/print-ba" target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none;"><i class="fas fa-file-pdf"></i> Cetak BA Otomatis</a>`;
+      let baButtons = `<a href="{{ url('engineering/sparepart') }}/${row.id}/print-ba" target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none;"><i class="fas fa-file-pdf"></i> Cetak BA Otomatis</a>`;
       if (baFiles.length > 0) {
         baFiles.forEach((bf, idx) => {
-          baButtons += `<a href="/storage/${bf}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration: none; border-color: var(--success); color: var(--success);"><i class="fas fa-file-signature"></i> Lihat BA Signed ${baFiles.length > 1 ? (idx + 1) : ''}</a>`;
+          baButtons += `<a href="/serve-file/${bf}" target="_blank" class="btn btn-sm btn-outline" style="text-decoration: none; border-color: var(--success); color: var(--success);"><i class="fas fa-file-signature"></i> Lihat BA Signed ${baFiles.length > 1 ? (idx + 1) : ''}</a>`;
         });
       }
 

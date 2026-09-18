@@ -255,7 +255,7 @@
         <div class="photo-card">
             @if(count($listMasuk) > 0)
                 @foreach($listMasuk as $img)
-                    <img src="{{ asset('storage/' . $img) }}" alt="Foto Masuk" style="margin-bottom: 4px;">
+                    <img src="/serve-file/{{ $img }}" alt="Foto Masuk" style="margin-bottom: 4px;">
                 @endforeach
             @else
                 <div class="no-photo">Belum ada foto</div>
@@ -267,7 +267,7 @@
         <div class="photo-card">
             @if(count($listProses) > 0)
                 @foreach($listProses as $img)
-                    <img src="{{ asset('storage/' . $img) }}" alt="Foto Proses" style="margin-bottom: 4px;">
+                    <img src="/serve-file/{{ $img }}" alt="Foto Proses" style="margin-bottom: 4px;">
                 @endforeach
             @else
                 <div class="no-photo">Belum ada foto</div>
@@ -279,7 +279,7 @@
         <div class="photo-card">
             @if(count($listKeluar) > 0)
                 @foreach($listKeluar as $img)
-                    <img src="{{ asset('storage/' . $img) }}" alt="Foto Keluar" style="margin-bottom: 4px;">
+                    <img src="/serve-file/{{ $img }}" alt="Foto Keluar" style="margin-bottom: 4px;">
                 @endforeach
             @else
                 <div class="no-photo">Belum ada foto</div>

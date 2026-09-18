@@ -54,3 +54,34 @@ Route::middleware('auth')->prefix('engineering')->name('engineering.')->group(fu
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Workaround route to serve storage files directly (bypassing symlink issues)
+Route::get('/serve-file/{path}', function ($path) {
+    // Cek di storage/app/public/ (lokasi default Laravel)
+    $filePath = storage_path('app/public/' . $path);
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+    // Cek di public/images/ (fallback untuk file lama)
+    $filePath2 = public_path('images/' . $path);
+    if (file_exists($filePath2)) {
+        return response()->file($filePath2);
+    }
+    abort(404);
+})->where('path', '.*');
+
+// Route khusus untuk memperbaiki symlink yang rusak di cPanel
+Route::get('/fix-symlink', function () {
+    $target = storage_path('app/public');
+    $link = public_path('storage');
+
+    try {
+        if (file_exists($link) || is_link($link)) {
+            unlink($link);
+        }
+        symlink($target, $link);
+        return "Berhasil! Symlink telah diperbaiki.<br>Target: {$target}<br>Link: {$link}<br>Silakan kembali ke halaman sebelumnya dan refresh.";
+    } catch (\Exception $e) {
+        return "Gagal membuat symlink: " . $e->getMessage();
+    }
+});
